@@ -294,8 +294,10 @@ DET = {"그", "이", "저", "그런", "이런", "저런", "무슨", "어느", "�
 DEP = re.compile(r"^(원|평|치|줄|때|건|것|게|수|번|살|개|명|년|적|뿐|듯|만큼|쯤|장|채|포기|마리|분)(을|를|이|가|은|는|에|도|만|로|로만|과|와|의|이라고|이라는|이었습니다|입니다)?$")
 
 
-VARY, VARY2 = 200, 250   # 앞 화면과 줄 수가 같으면 / 세 화면 연속 같으면 벌점(10-13 "1줄에서 3줄까지 변경하면서")
-MID_BRK = 900   # 쉼표·연결어미가 아닌 곳에서 화면을 넘길 때 벌점
+VARY, VARY2 = 200, 450   # 앞 화면과 줄 수가 같으면 / 세 화면 연속 같으면 벌점(10-13 "1줄에서 3줄까지 변경하면서")
+MID_BRK = 900   # 쉼표·연결어미·조사가 아닌 곳(관형형 「쓸모없다던 / 그 땅」 등)에서 화면을 넘길 때 벌점
+MID_SOFT = 350  # 조사 뒤(「딸에게 / 따뜻한」)에서 넘길 때
+PARTICLE = re.compile(r"(은|는|이|가|을|를|에|에서|에게|께|도|만|으로|로|와|과|랑|한테)$")
 ROW_BIAS = {1: -60, 2: 0, 3: 120}   # 줄 수별 벌점 — 3줄만 많아지지 않게(ep03·04 기준 1·2·3줄 약 2:4:3)
 CLAUSE = re.compile(r"(니|고|며|서|데|면|지만|다가|도록|려고|니까|면서|아도|어도|해도|라도|는데|은데|더니|자|요)$")   # 화면을 넘기기 좋은 말끝
 
@@ -374,9 +376,9 @@ def split_line(text, dur=None, wrap=False, hist=(0, 0)):
                 opts = rows_of(i, j)
                 if not opts: break
                 base = 100
-                if j < n: base += brk(j) * 2 + (0 if raw[j - 1].endswith(",") or CLAUSE.search(words[j - 1]) else MID_BRK)   # 화면 사이 어색한 끊김은 줄 사이보다 더 나쁨
+                if j < n: base += brk(j) * 2 + (0 if raw[j - 1].endswith(",") or CLAUSE.search(words[j - 1]) else MID_SOFT if PARTICLE.search(words[j - 1]) and len(plain(words[j - 1])) > 1 else MID_BRK)   # 화면 사이 어색한 끊김은 줄 사이보다 더 나쁨
                 d = secs(i, j)
-                if not (i == 0 and j == n) and d < 1.5: base += (1.5 - d) * 400   # 문장 조각이 1.5초 안에 바뀜(짧은 문장 통째는 아래에서 합침)
+                if not (i == 0 and j == n) and d < 1.5: base += (1.5 - d) * 400 + (1200 + (1.0 - d) * 1000 if d < 1.0 else 0)   # 문장 조각이 1.5초 안에 바뀜, 1초 안은 거의 금지(ep05 「그런데」 0.4초) — 짧은 문장 통째는 아래에서 합침
                 for st, (c0, _) in [(k, v) for k, v in best.items() if k[0] == i]:
                     for r, (rs, rc) in opts.items():
                         c = c0 + base + rc + ROW_BIAS[r] + (VARY if r == st[1] else 0) + (VARY2 if r == st[1] == st[2] else 0)   # 줄 수 바꿔 가며
