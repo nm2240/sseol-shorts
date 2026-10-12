@@ -1,0 +1,10 @@
+# 큰 미디어·생성물은 올리지 않음(각 PC에서 다시 만듦)
+*.mp4
+*.wav
+*.mp3
+*.raw.txt
+*.wav.json
+**/out/
+*.log
+__pycache__/
+썰쇼츠 최종본/

@@ -1,0 +1,689 @@
+{
+ "source": "사용자 제공 타입캐스트 연령별 캐릭터 목록(2026-10-12)",
+ "voices": [
+  {
+   "age_group": "유치원·초등 여자아이",
+   "ko": "하율",
+   "name": "Hayul",
+   "voice_id": "tc_65fbe54e2668bc4ddbd8b2a6",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "child"
+  },
+  {
+   "age_group": "유치원·초등 여자아이",
+   "ko": "새론",
+   "name": "Saeron",
+   "voice_id": "tc_65c47f4f7e237f1cb0a80380",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "유치원·초등 여자아이",
+   "ko": "아찌",
+   "name": "Azzi",
+   "voice_id": "tc_66596206b7bd6e89c3a2c54e",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "child"
+  },
+  {
+   "age_group": "유치원·초등 여자아이",
+   "ko": "채린이",
+   "name": "Chaelin",
+   "voice_id": "tc_5ffda44bcba8f6d3d46fc41f",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "child"
+  },
+  {
+   "age_group": "청소년 여학생",
+   "ko": "소이",
+   "name": "Soyi",
+   "voice_id": "tc_67b68ff3ba5438793103bfab",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "청소년 여학생",
+   "ko": "다솜",
+   "name": "Dasom",
+   "voice_id": "tc_6243fb7beec1a1bff3cfe6c4",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "청소년 여학생",
+   "ko": "서윤",
+   "name": "Seoyoon",
+   "voice_id": "tc_66bf0dd95e009c61025eb27f",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "청소년 여학생",
+   "ko": "지안",
+   "name": "Jian",
+   "voice_id": "tc_615c6a4e369566b08b8a7a71",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "청소년 여학생",
+   "ko": "지우",
+   "name": "Jiwoo",
+   "voice_id": "tc_5ebea14e433bd200073e0dce",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "수빈",
+   "name": "Soobin",
+   "voice_id": "tc_63aaec0d34ca719d00798a97",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "유라",
+   "name": "Yura",
+   "voice_id": "tc_61130d6cf89dd58a4c13295d",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "지안",
+   "name": "Jian",
+   "voice_id": "tc_615c6a4e369566b08b8a7a71",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "은경",
+   "name": "Eunkyung",
+   "voice_id": "tc_6a7446c19f2d7dfed990a900",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "서현",
+   "name": "Seohyeon",
+   "voice_id": "tc_69f2e455ea79fd197aa0476f",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "다은",
+   "name": "Daeun",
+   "voice_id": "tc_692799c46508f6b9468c54c7",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "문정",
+   "name": "Moonjung",
+   "voice_id": "tc_68f9c6a72f0f04a417bb136f",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "이현",
+   "name": "Leehyun",
+   "voice_id": "tc_68ddea1e462b169ddd20b74d",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "예진",
+   "name": "Yejin",
+   "voice_id": "tc_67c90ad544cf859417f2fc3a",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "설화",
+   "name": "Seolhwa",
+   "voice_id": "tc_6731b307df12333201d12b94",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "연서",
+   "name": "Yeonsuh",
+   "voice_id": "tc_64b0eede22ce103fdc1d9f78",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 여성",
+   "ko": "소라",
+   "name": "Sora",
+   "voice_id": "tc_62c3de188bb43a2b3ab3ef08",
+   "note": "말 안 듣는",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "재선",
+   "name": "Jaesun",
+   "voice_id": "tc_684a7a1446e2a628b5b07230",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "혜원",
+   "name": "Hyewon",
+   "voice_id": "tc_640997db84d8713b1114f32a",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "소혜",
+   "name": "Sohye",
+   "voice_id": "tc_642f9d147ce3f79717423466",
+   "note": "버릇없는 빌런",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "진서",
+   "name": "Jinseo",
+   "voice_id": "tc_65bb3a1976b69213594357fc",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "영희",
+   "name": "Younghee",
+   "voice_id": "tc_5c3c52caea9791000747155e",
+   "note": "잘난 체",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "서연",
+   "name": "Seoyeon",
+   "voice_id": "tc_637cbfeef7f00f21e8a1c6c8",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "지현",
+   "name": "Jihyun",
+   "voice_id": "tc_65f280ecf1a9fb325938fdf9",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "지윤",
+   "name": "Jiyoon",
+   "voice_id": "tc_62296627a4ff5d1ee6bf4ecc",
+   "note": "밝음",
+   "api_gender": "female",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "지선",
+   "name": "Jiseon",
+   "voice_id": "tc_6a4f2130d153a5cac8e19996",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 여성",
+   "ko": "소영",
+   "name": "Soyoung",
+   "voice_id": "tc_5c789c317ad86500073a02cc",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "재선",
+   "name": "Jaesun",
+   "voice_id": "tc_684a7a1446e2a628b5b07230",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "자인",
+   "name": "Jain",
+   "voice_id": "tc_6809c111e5e8c73f8a0237b2",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "연자",
+   "name": "Yeonja",
+   "voice_id": "tc_65b21530d893c47d5751840f",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "미선",
+   "name": "Miseon",
+   "voice_id": "tc_65a8c7e1915a6295614f775b",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "혜원",
+   "name": "Hyewon",
+   "voice_id": "tc_640997db84d8713b1114f32a",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "미경",
+   "name": "Mikyung",
+   "voice_id": "tc_633d52c5febcba27f45eced7",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "오미자",
+   "name": "Mija",
+   "voice_id": "tc_6059db64e2d12a32cce1b0c7",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "연화",
+   "name": "Yeonhwa",
+   "voice_id": "tc_600697fd8a8ea9b977284703",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "혜정",
+   "name": "Hyejung",
+   "voice_id": "tc_5f8e9644f6120100074475f0",
+   "note": "세련된 중년",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "현경",
+   "name": "Hyunkyung",
+   "voice_id": "tc_5ecbbc5599979700087711d6",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "경숙",
+   "name": "Kyungsook",
+   "voice_id": "tc_5ebea266728f5b00075e6215",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 여성",
+   "ko": "경애",
+   "name": "Kyungae",
+   "voice_id": "tc_6a867e7a0e6ddfd2f2dd17b6",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70대 여성",
+   "ko": "주하",
+   "name": "Juha",
+   "voice_id": "tc_5d01a52563338e00072b8c9c",
+   "note": "점잖은",
+   "api_gender": "female",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70대 여성",
+   "ko": "순이",
+   "name": "Sooni",
+   "voice_id": "tc_60ad0841061ee28740ec2e1c",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70대 여성",
+   "ko": "숙희",
+   "name": "Sookhee",
+   "voice_id": "tc_61c2f70c343884babeed840b",
+   "note": "혼내는",
+   "api_gender": "female",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "80대 여성",
+   "ko": "정순",
+   "name": "Jungsoon",
+   "voice_id": "tc_5ebea242728f5b00075e6211",
+   "note": "",
+   "api_gender": "female",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "유치원·초등 남자아이",
+   "ko": "준우",
+   "name": "Junwoo",
+   "voice_id": "tc_6a98d65b0402016f616a7ac3",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "child"
+  },
+  {
+   "age_group": "유치원·초등 남자아이",
+   "ko": "하준",
+   "name": "Hajun",
+   "voice_id": "tc_60db308484130840f23e6ca0",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "child"
+  },
+  {
+   "age_group": "유치원·초등 남자아이",
+   "ko": "호빈이",
+   "name": "Hobin",
+   "voice_id": "tc_5ffda49bcba8f6d3d46fc447",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "child"
+  },
+  {
+   "age_group": "청소년 남학생",
+   "ko": "예준",
+   "name": "Yejoon",
+   "voice_id": "tc_63edf3d68aab086d6b782a55",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "teenager"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "현준",
+   "name": "Hyunjun",
+   "voice_id": "tc_6a6194d59eea84806aea652c",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "세우",
+   "name": "Sewoo",
+   "voice_id": "tc_67d2346b8572120c4aa63e33",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "이겸",
+   "name": "Igyeom",
+   "voice_id": "tc_67bfd35fda120cfcc76b9cb9",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "한결",
+   "name": "Hangyeol",
+   "voice_id": "tc_677f2aa4a854ddffa0ebda89",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "도현",
+   "name": "Dohyun",
+   "voice_id": "tc_66d000ee0742c43c93a0ada1",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "원호",
+   "name": "Wonho",
+   "voice_id": "tc_66bf0dadd3f21fab24da6708",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "이준",
+   "name": "Ijun",
+   "voice_id": "tc_662a05b17419f60500ac5630",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "민준",
+   "name": "Minjoon",
+   "voice_id": "tc_643fa086abd682c4af98e853",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "20대 남성",
+   "ko": "도한",
+   "name": "Dohan",
+   "voice_id": "tc_63c76c7f0a9ab6c54f4d36bd",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "김건",
+   "name": "Gunn Kim",
+   "voice_id": "tc_61c2f7741330d213c238cba6",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "곽두필",
+   "name": "Dupil",
+   "voice_id": "tc_606c6c684085209e5555abb0",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "한준",
+   "name": "Hanjun",
+   "voice_id": "tc_618b1849ef7827cfea34ea1e",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "young_adult"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "필재",
+   "name": "Piljae",
+   "voice_id": "tc_68257f68bc6e3c161ab5078d",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "철훈",
+   "name": "Cheolhoon",
+   "voice_id": "tc_685cdfad4027aeec7d097a28",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "석표",
+   "name": "Seokpyo",
+   "voice_id": "tc_654c82dd5fa2797667b1c544",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "30~40대 남성",
+   "ko": "재준",
+   "name": "Jaejun",
+   "voice_id": "tc_653220349ba8419521ae8a63",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 남성",
+   "ko": "권일",
+   "name": "Kwonil",
+   "voice_id": "tc_675a73eb789ff3ea6cc80235",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "50~60대 남성",
+   "ko": "병훈",
+   "name": "Byunghun",
+   "voice_id": "tc_694395d43f2c8d9d43e9a897",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "middle_age"
+  },
+  {
+   "age_group": "50~60대 남성",
+   "ko": "중현",
+   "name": "Joonghyun",
+   "voice_id": "tc_61cd3cc126463f411925e8a6",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "50~60대 남성",
+   "ko": "명일",
+   "name": "Myungil",
+   "voice_id": "tc_62d66c2d1523be99355fda02",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70~80대 남성",
+   "ko": "창배",
+   "name": "Changbae",
+   "voice_id": "tc_60ad08c829e878c3c7d73965",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70~80대 남성",
+   "ko": "덕춘",
+   "name": "Duckchun",
+   "voice_id": "tc_5c3c52c95827e00008dd7f34",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70~80대 남성",
+   "ko": "학철",
+   "name": "Hakchul",
+   "voice_id": "tc_63a3d9d14b235ddd6541a78e",
+   "note": "억지 쓰는 할아버지",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70~80대 남성",
+   "ko": "일호",
+   "name": "Ilho",
+   "voice_id": "tc_61945d9c2c11c2c9fd934340",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  },
+  {
+   "age_group": "70~80대 남성",
+   "ko": "영길",
+   "name": "Younggil",
+   "voice_id": "tc_5ebea13564afaf00087fc2e7",
+   "note": "",
+   "api_gender": "male",
+   "api_age": "elder"
+  }
+ ]
+}
