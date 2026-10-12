@@ -21,7 +21,7 @@ description: 썰쇼츠 — 「썰풀때는」(@썰-풀때는) 벤치마킹 시�
 
 ## 제작 순서
 ```
-1. epNN\script.txt 작성(아래 형식) — 대본은 SCRIPT_FORMULA.md 공식대로
+1. 소재(다른 채널 영상·글) → SCRIPT_FORMULA.md 공식으로 대본 → 사용자에게 먼저 보여 줌 → epNN\script.txt(아래 형식)
 2. 인물별 목소리 후보 3개 샘플 → 고르기(이미 정한 인물은 생략)
 3. python tts.py epNN          # 타입캐스트 합성 → epNN\tts\plan.json (키: ~/.volcano/keys/typecast)
 4. python render.py epNN       # 줄 정렬·자막·배경 → epNN\out\epNN_final.mp4 + 최종본 복사
@@ -75,4 +75,5 @@ fonts\  bg\(풍경 mp4는 SOURCES.md 보고 받기)  대본분석.md(레퍼런�
 epNN\script.txt  epNN\tts\plan.json  epNN\voice_samples\  epNN\out\(무시)
 후보_썰보관소\(각색 후보 대본)   썰쇼츠 최종본\(완성본, 무시)
 ```
+- 대본 공식: **SCRIPT_FORMULA.md**(썰풀때는 81편 분석, 다른 채널 소재 각색 절차 포함). 분석 원자료 `analysis`.
 - ep01: 대본만(최종 v6). ep02: 볼케이노킷(Gemini) 음성, 편 안의 옛 render.py. ep03: 타입캐스트 첫 편, 편 안의 옛 render.py — 경숙 목소리 교체·보따리 줄 추가 대기. ep04: 공용 render.py·tts.py 기준 편.
