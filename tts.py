@@ -20,11 +20,13 @@ lines = []
 for l in open(os.path.join(ROOT, "script.txt"), encoding="utf-8-sig"):
     m = re.match(r"\[([^·\]]+)·([^\]]+)\]\s*(.+)", l.strip())
     if m: lines.append({"spk": m.group(1), "voice": m.group(2), "text": m.group(3)})
-# 노란 문구 읽는 안내 목소리(10-13 사용자 "화면을 두 번 터치하면… 여기 나레이션 넣어줘. 20대 여성으로")
-cta = None
+# 노란 문구 읽는 목소리 — 10-13 처음엔 20대 여성 안내(Daeun, ep04·ep03) → 같은 날 "노란 문구는 나레이션하던 인물로 그냥 이어서 해"
+# → 새 편은 >>> [나레이터·나레이터 목소리] 로 적고, 앞뒤 줄을 문맥으로 넣어 이어 읽는 말투로 합성
+cta, _n = None, 0
 for l in open(os.path.join(ROOT, "script.txt"), encoding="utf-8-sig"):
+    if re.match(r"\[([^·\]]+)·([^\]]+)\]\s*(.+)", l.strip()): _n += 1
     m = re.match(r">>>\s*\[([^·\]]+)·([^\]]+)\]\s*(.+)", l.strip())
-    if m: cta = {"spk": m.group(1), "voice": m.group(2), "text": m.group(3)}
+    if m: cta = {"spk": m.group(1), "voice": m.group(2), "text": m.group(3), "pos": _n}
 bad = sorted(({l["voice"] for l in lines} | ({cta["voice"]} if cta else set())) & BANNED)
 if bad: sys.exit(f"금지 목소리: {bad} — 다른 목소리로 바꿀 것")
 
@@ -76,11 +78,13 @@ for gi, g in enumerate(groups):
     chunks.append({"v": v, "ids": g, "file": "tts/" + name})
 cta_out = None
 if cta:
-    name = "cta_" + hashlib.md5((cta["voice"] + "|" + cta["text"] + f"|t{TEMPO}").encode()).hexdigest()[:8]
+    name = "cta_" + hashlib.md5((cta["voice"] + "|" + cta["text"] + f"|t{TEMPO}" + ("|ctx" if cta["voice"] != "Daeun" else "")).encode()).hexdigest()[:8]
     path = os.path.join(TTS, name + ".wav")
     if not os.path.exists(path):
         body = {"voice_id": VOICE_ID[cta["voice"]], "text": cta["text"], "model": "ssfm-v30", "language": "kor",
-                "output": {"audio_format": "wav", "audio_tempo": TEMPO}, "prompt": {"emotion_type": "smart"}}
+                "output": {"audio_format": "wav", "audio_tempo": TEMPO},
+                "prompt": {"emotion_type": "smart", "previous_text": say(lines[cta["pos"] - 1]["text"]) if cta["pos"] else "",
+                           "next_text": say(lines[cta["pos"]]["text"]) if cta["pos"] < len(lines) else ""}}
         req = urllib.request.Request("https://api.typecast.ai/v1/text-to-speech", data=json.dumps(body).encode(),
                                      method="POST", headers={"X-API-KEY": KEY, "Content-Type": "application/json"})
         open(path, "wb").write(urllib.request.urlopen(req, timeout=120).read()); print(name, cta["voice"], "안내")

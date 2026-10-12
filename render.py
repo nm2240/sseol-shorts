@@ -1,5 +1,5 @@
 # 썰쇼츠 공용 렌더러: python render.py epNN
-# 타입캐스트 묶음 TTS(tts.py) → 줄 시간 정렬 → 풍경 배경 + 회색 박스 자막 + 다색 제목 + 노란 문구(안내 음성)
+# 타입캐스트 묶음 TTS(tts.py) → 줄 시간 정렬 → 풍경 배경 + 회색 박스 자막(1~3줄) + 다색 제목 + 노란 문구(나레이터가 읽음)
 # 편마다 다른 값(제목줄·노란 문구 위치·배경 순서)은 epNN/script.txt 에서 읽는다 — SKILL.md 참고
 import json, os, re, subprocess, sys
 import numpy as np, soundfile as sf
@@ -188,7 +188,7 @@ for _k, _l in enumerate(SCRIPT):
         _prev = [m.group(1).strip() for m in _prev if m]
         CTA_KEY = _prev[-1] if _prev else None
 CTA_DUR = 3.0         # 문구가 떠 있는 동안 본 나레이션 멈춤 → 문구가 사라지는 순간 다음 줄 시작(10-12)
-# 노란 문구는 20대 여성 안내 목소리가 읽음(10-13) — 문구 뜨고 0.15초 뒤 시작, 길면 문구를 그만큼 더 띄움
+# 노란 문구를 읽는 목소리(10-13: ep03·ep04는 20대 여성 안내 Daeun, 새 편부터 나레이터가 이어서) — 문구 뜨고 0.15초 뒤 시작, 길면 문구를 그만큼 더 띄움
 CTA_VOICE = None
 if plan.get("cta"):
     _cv = load(os.path.join(ROOT, plan["cta"]["file"] + ".wav"))
@@ -232,7 +232,7 @@ if CTA_VOICE is not None:   # 안내 목소리 크기를 본 나레이션에 맞
     _rest = [g_ for j, (s_, g_) in enumerate(pieces) if j != _k]
     _gain = min(np.median([_act(g_) for g_ in _rest]) / _act(CTA_VOICE), max(np.abs(g_).max() for g_ in _rest) / np.abs(CTA_VOICE).max())
     pieces[_k] = (pieces[_k][0], CTA_VOICE * _gain)
-    print(f"안내 목소리 {20 * np.log10(_gain):+.1f}dB")
+    print(f"노란 문구 목소리 {20 * np.log10(_gain):+.1f}dB")
 narr = np.zeros(int((max(s + len(g) / SR for s, g in pieces)) * SR) + 1, "float32")
 for s, g in pieces:
     narr[int(s * SR):int(s * SR) + len(g)] += g
@@ -294,11 +294,15 @@ DET = {"그", "이", "저", "그런", "이런", "저런", "무슨", "어느", "�
 DEP = re.compile(r"^(원|평|치|줄|때|건|것|게|수|번|살|개|명|년|적|뿐|듯|만큼|쯤|장|채|포기|마리|분)(을|를|이|가|은|는|에|도|만|로|로만|과|와|의|이라고|이라는|이었습니다|입니다)?$")
 
 
+VARY, VARY2 = 200, 250   # 앞 화면과 줄 수가 같으면 / 세 화면 연속 같으면 벌점(10-13 "1줄에서 3줄까지 변경하면서")
+MID_BRK = 900   # 쉼표·연결어미가 아닌 곳에서 화면을 넘길 때 벌점
+ROW_BIAS = {1: -60, 2: 0, 3: 120}   # 줄 수별 벌점 — 3줄만 많아지지 않게(ep03·04 기준 1·2·3줄 약 2:4:3)
 CLAUSE = re.compile(r"(니|고|며|서|데|면|지만|다가|도록|려고|니까|면서|아도|어도|해도|라도|는데|은데|더니|자|요)$")   # 화면을 넘기기 좋은 말끝
 
 
-def split_line(text, dur=None, wrap=False):
-    """한 줄(같은 화자) → 화면 목록. 화면 하나 = 1~3줄(SUB_ROWS) — 10-13 "글씨가 커서 자막이 빨리 바뀌니까 어지러워"
+def split_line(text, dur=None, wrap=False, hist=(0, 0)):
+    """한 줄(같은 화자) → (화면 목록, 마지막 두 화면 줄 수). 화면 하나 = 1~3줄(SUB_ROWS) — 10-13 "글씨가 커서 자막이 빨리 바뀌니까 어지러워"
+    + "3줄 하라는 게 아니고 무료하니까 1줄에서 3줄까지 변경하면서" → 앞 화면과 줄 수가 같으면 벌점(hist = 앞 두 화면 줄 수)
     ① 문장을 화면으로 나누고(말끝·쉼표에서, 3줄 안) ② 화면 안을 줄(폭 960px)로 나눈다. 아주 짧은 문장은 다음 문장과 한 화면."""
     rate = len(plain(text)) / dur if dur else None   # 이 줄 말 속도(글자/초) — 너무 빨리 지나가는 화면을 피하려고
     sents = [x for x in re.split(r"(?<=[.?!])\s+", text.replace('"', "").strip()) if x.split()]
@@ -333,7 +337,7 @@ def split_line(text, dur=None, wrap=False):
 
         _rows = {}
 
-        def rows_of(a, b):   # words[a:b] 를 3줄 안으로 나눔 → (줄 목록, 벌점) / 3줄에 안 들어가면 (None, 0)
+        def rows_of(a, b):   # words[a:b] 를 3줄 안으로 나눔 → {줄 수: (줄 목록, 벌점)} / 3줄에 안 들어가면 {}
             if (a, b) in _rows: return _rows[(a, b)]
             best = {(a, 0): (0.0, None)}   # (끝 낱말, 줄 수) → (벌점, 앞 끝)
             for j in range(a + 1, b + 1):
@@ -351,29 +355,37 @@ def split_line(text, dur=None, wrap=False):
                         c = best[(i, r - 1)][0] + 60 + fill ** 2 + bad
                         if c < cur[0]: cur = (c, i)
                     if cur[1] is not None: best[(j, r)] = cur
-            ends = [(best[(b, r)][0], r) for r in range(1, SUB_ROWS + 1) if (b, r) in best]
-            if not ends:
-                _rows[(a, b)] = (None, 0); return _rows[(a, b)]
-            c, r = min(ends)
-            out, j = [], b
-            while j > a:
-                i = best[(j, r)][1]; out.append(" ".join(words[i:j])); j = i; r -= 1
-            _rows[(a, b)] = (out[::-1], c)
-            return _rows[(a, b)]
+            opts = {}   # 줄 수 → (줄 목록, 벌점) — 같은 말도 1줄·2줄로 다르게 담을 수 있게(최소 줄 수 +1까지만)
+            rmin = min((r for r in range(1, SUB_ROWS + 1) if (b, r) in best), default=None)
+            for r0 in range(1, SUB_ROWS + 1):
+                if (b, r0) not in best or r0 > rmin + 1: continue
+                out, j, r = [], b, r0
+                while j > a:
+                    i = best[(j, r)][1]; out.append(" ".join(words[i:j])); j = i; r -= 1
+                if r0 > rmin and min(len(plain(x)) for x in out) < 4: continue   # 억지로 늘린 줄에 2~3글자만 남으면 안 씀
+                opts[r0] = (out[::-1], best[(b, r0)][0])
+            _rows[(a, b)] = opts
+            return opts
 
-        best = [0.0] + [1e18] * n; prev = [0] * (n + 1)
+        h0 = (len(screens[-1][0]), len(screens[-2][0]) if len(screens) > 1 else hist[0]) if screens else hist
+        best = {(0,) + tuple(h0): (0.0, None)}   # (끝 낱말, 앞 화면 줄 수, 그 앞 화면 줄 수) → (벌점, (앞 상태, 줄 목록))
         for j in range(1, n + 1):
             for i in range(j - 1, -1, -1):
-                rs, rc = rows_of(i, j)
-                if rs is None: break
-                c = best[i] + 100 + rc
-                if j < n: c += brk(j) * 2 + (0 if raw[j - 1].endswith(",") or CLAUSE.search(words[j - 1]) else 150)   # 화면 사이 어색한 끊김은 줄 사이보다 더 나쁨
+                opts = rows_of(i, j)
+                if not opts: break
+                base = 100
+                if j < n: base += brk(j) * 2 + (0 if raw[j - 1].endswith(",") or CLAUSE.search(words[j - 1]) else MID_BRK)   # 화면 사이 어색한 끊김은 줄 사이보다 더 나쁨
                 d = secs(i, j)
-                if not (i == 0 and j == n) and d < 1.5: c += (1.5 - d) * 400   # 문장 조각이 1.5초 안에 바뀜(짧은 문장 통째는 아래에서 합침)
-                if c < best[j]: best[j], prev[j] = c, i
-        part, j = [], n
-        while j > 0:
-            i = prev[j]; part.append([rows_of(i, j)[0], i == 0 and j == n, secs(i, j)]); j = i
+                if not (i == 0 and j == n) and d < 1.5: base += (1.5 - d) * 400   # 문장 조각이 1.5초 안에 바뀜(짧은 문장 통째는 아래에서 합침)
+                for st, (c0, _) in [(k, v) for k, v in best.items() if k[0] == i]:
+                    for r, (rs, rc) in opts.items():
+                        c = c0 + base + rc + ROW_BIAS[r] + (VARY if r == st[1] else 0) + (VARY2 if r == st[1] == st[2] else 0)   # 줄 수 바꿔 가며
+                        key = (j, r, st[1])
+                        if key not in best or c < best[key][0]: best[key] = (c, (st, rs, i == 0 and j == n, d))
+        key = min((k for k in best if k[0] == n), key=lambda k: best[k][0])
+        part = []
+        while key[0] > 0:
+            _, (pk, rs, whole, d) = best[key]; part.append([rs, whole, d]); key = pk
         screens += part[::-1]
     # 아주 짧은 문장(1.2초 안)은 다음 화면과 합침(3줄 안일 때)
     k = 0
@@ -382,7 +394,8 @@ def split_line(text, dur=None, wrap=False):
             screens[k] = [screens[k][0] + screens[k + 1][0], False, screens[k][2] + screens[k + 1][2]]
             del screens[k + 1]
         else: k += 1
-    return [s[0] for s in screens]
+    out = [s[0] for s in screens]
+    return out, (len(out[-1]), len(out[-2]) if len(out) > 1 else hist[0])
 
 
 def sub_clean(t):
@@ -429,9 +442,10 @@ def piece_times(l, parts):
 
 
 events = []
+sub_hist = (0, 0)
 for l in lines:
     quote = l["spk"] != "나레이터"
-    screens = split_line(l["text"], l["b"] - l["a"], wrap=quote)
+    screens, sub_hist = split_line(l["text"], l["b"] - l["a"], wrap=quote, hist=sub_hist)
     ts = piece_times(l, [" ".join(sc) for sc in screens])
     for k, sc in enumerate(screens):
         p = r"\N".join(sc)

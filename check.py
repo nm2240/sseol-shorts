@@ -41,6 +41,7 @@ ev = re.findall(r"Dialogue: 1,([^,]+),([^,]+),Sub,,0,0,0,,\{[^}]*\}(.*)", ass)
 short = [(round(ts(a), 2), round(ts(b) - ts(a), 2), t) for a, b, t in ev if ts(b) - ts(a) < 1.2]
 rows = [t.count(r"\N") + 1 for _, _, t in ev]
 dur = [ts(b) - ts(a) for a, b, _ in ev]
-print(f"자막 {len(ev)}화면(평균 {np.mean(dur):.1f}초, 1·2·3줄 {rows.count(1)}·{rows.count(2)}·{rows.count(3)}, 4줄 이상 {sum(r > 3 for r in rows)}), 1.2초 미만 {len(short)}개", short)
+run = max(len(m.group()) for m in re.finditer(r"1+|2+|3+|[4-9]+", "".join(str(min(r, 9)) for r in rows)))   # 같은 줄 수가 몇 화면 이어지나(10-13 "1줄에서 3줄까지 변경하면서")
+print(f"자막 {len(ev)}화면(평균 {np.mean(dur):.1f}초, 1·2·3줄 {rows.count(1)}·{rows.count(2)}·{rows.count(3)}, 같은 줄 수 최장 연속 {run}, 4줄 이상 {sum(r > 3 for r in rows)}), 1.2초 미만 {len(short)}개", short)
 print(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_name,pix_fmt,width,height,profile:format=duration",
                       "-of", "compact", os.path.join(OUT, os.path.basename(EP) + "_final.mp4")], capture_output=True, text=True).stdout)
