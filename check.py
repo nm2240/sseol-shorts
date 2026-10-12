@@ -37,7 +37,10 @@ for i in range(len(L) - 1):
     if len(dead) and dead[0] >= w: ends.append((20 * np.log10(f[dead[0] - w] + 1e-9), i))
 print(f"줄 끝(소리 사라지기 직전 10ms) 최대 {max(ends)[0]:.0f}dBFS, 줄 {max(ends)[1]}")
 ev = re.findall(r"Dialogue: 1,([^,]+),([^,]+),Sub,,0,0,0,,\{[^}]*\}(.*)", ass)
-short = [(round(ts(a), 2), round(ts(b) - ts(a), 2), t) for a, b, t in ev if ts(b) - ts(a) < 0.6]
-print(f"자막 {len(ev)}조각, 0.6초 미만 {len(short)}개", short)
+# 자막 한 화면 1~3줄(10-13) — 화면이 1.2초 안에 바뀌면 어지러움
+short = [(round(ts(a), 2), round(ts(b) - ts(a), 2), t) for a, b, t in ev if ts(b) - ts(a) < 1.2]
+rows = [t.count(r"\N") + 1 for _, _, t in ev]
+dur = [ts(b) - ts(a) for a, b, _ in ev]
+print(f"자막 {len(ev)}화면(평균 {np.mean(dur):.1f}초, 1·2·3줄 {rows.count(1)}·{rows.count(2)}·{rows.count(3)}, 4줄 이상 {sum(r > 3 for r in rows)}), 1.2초 미만 {len(short)}개", short)
 print(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_name,pix_fmt,width,height,profile:format=duration",
                       "-of", "compact", os.path.join(OUT, os.path.basename(EP) + "_final.mp4")], capture_output=True, text=True).stdout)

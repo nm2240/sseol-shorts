@@ -19,6 +19,7 @@ SR = 48000
 MAX_LEN = 180.0       # 3분 넘을 때만 속도 조절(최후 수단, 사용자 10-12 "3분 안 넘기면 그냥 쓰자")
 MIN_LEN = 150.0       # 2분 30초
 SUB_LIMIT = 10        # 한 줄 10자(레퍼런스 크기 125에서 화면 안)
+SUB_ROWS = 3          # 이 채널만 자막 한 화면 1~3줄(넷플릭스 한 줄 규칙 예외, 10-13)
 
 plan = json.load(open(os.path.join(TTS, "plan.json"), encoding="utf-8"))
 lines, chunks = plan["lines"], plan["chunks"]
@@ -290,13 +291,18 @@ NUM_DET = {"한", "두", "세", "네", "몇", "여러"}   # 뒤에 단위가 오
 SPACE = re.compile(r"^(앞|뒤|옆|위|밑|안|밖)(에|에서|에는|으로|로)?$")   # 「컨테이너 / 앞에」
 AUX_HEAD = ("계", "있", "주", "보", "놓", "두", "버리", "드리")   # 「누워 / 계신」 같은 보조용언
 DET = {"그", "이", "저", "그런", "이런", "저런", "무슨", "어느", "어떤", "다른"}   # 뒤 말과 붙어 다니는 관형사
-DEP = re.compile(r"^(원|평|치|줄|때|건|것|수|번|살|개|명|년|적|뿐|듯|만큼|쯤|장|채|포기|마리|분)(을|를|이|가|은|는|에|도|만|로|로만|과|와|의|이라고|이라는|이었습니다|입니다)?$")
+DEP = re.compile(r"^(원|평|치|줄|때|건|것|게|수|번|살|개|명|년|적|뿐|듯|만큼|쯤|장|채|포기|마리|분)(을|를|이|가|은|는|에|도|만|로|로만|과|와|의|이라고|이라는|이었습니다|입니다)?$")
+
+
+CLAUSE = re.compile(r"(니|고|며|서|데|면|지만|다가|도록|려고|니까|면서|아도|어도|해도|라도|는데|은데|더니|자|요)$")   # 화면을 넘기기 좋은 말끝
 
 
 def split_line(text, dur=None, wrap=False):
-    out = []
-    rate = len(plain(text)) / dur if dur else None   # 이 줄 말 속도(글자/초) — 너무 빨리 지나가는 조각을 피하려고
+    """한 줄(같은 화자) → 화면 목록. 화면 하나 = 1~3줄(SUB_ROWS) — 10-13 "글씨가 커서 자막이 빨리 바뀌니까 어지러워"
+    ① 문장을 화면으로 나누고(말끝·쉼표에서, 3줄 안) ② 화면 안을 줄(폭 960px)로 나눈다. 아주 짧은 문장은 다음 문장과 한 화면."""
+    rate = len(plain(text)) / dur if dur else None   # 이 줄 말 속도(글자/초) — 너무 빨리 지나가는 화면을 피하려고
     sents = [x for x in re.split(r"(?<=[.?!])\s+", text.replace('"', "").strip()) if x.split()]
+    screens = []   # [줄 목록, 문장 하나를 통째로 담았나, 초]
     for si, sent in enumerate(sents):
         last_sent = si == len(sents) - 1
         raw = sent.split()
@@ -307,38 +313,76 @@ def split_line(text, dur=None, wrap=False):
         n = len(words)
         W = lambda i, j: _SUBF.getlength(("'%s'" if wrap else "%s") % " ".join(words[i:j]))   # 대사는 작은따옴표까지 재기
         quote_open = [" ".join(raw[:k]).count("'") % 2 == 1 for k in range(n + 1)]   # k번째 앞에서 끊으면 따옴표 안인가
-        best = [(0, 0.0, None)] + [(0, 1e18, None)] * n
+        secs = lambda i, j: len(plain(" ".join(words[i:j]))) / rate if rate else 9
+
+        def brk(j):   # j번째 낱말 앞에서 끊을 때 벌점
+            if j == n: return 0
+            bad = 0 if raw[j - 1].endswith(",") or (re.search(BREAK_OK, words[j - 1]) and len(plain(words[j - 1])) > 1) else 200
+            if DEP.match(plain(words[j])): bad += 1500   # 단위·의존명사로 시작 금지
+            if plain(words[j - 1]) in NUM_DET: bad += 1500   # 「한 / 장」
+            if j < n - 1 and plain(words[j]) in NUM_DET and not raw[j - 1].endswith(","): bad += 300    # 「집 / 한 채」(쉼표 뒤 「한 번도」는 괜찮음)
+            if quote_open[j]: bad += 800
+            if plain(words[j - 1]) in DET: bad += 1500   # 「그 / 할머니께」
+            if SPACE.match(plain(words[j])): bad += 800
+            if plain(words[j - 1])[-1:] in "아어워와해여셔져춰" and plain(words[j]).startswith(AUX_HEAD): bad += 600
+            if "'" in raw[j] and quote_open[j] and len(plain(words[j])) <= 4: bad += 600   # 닫는 따옴표 말만 다음 줄로
+            if plain(words[j]).startswith("싶") or plain(words[j]) == "말고": bad += 600   # 「보고 / 싶은」「들다 / 말고」
+            if plain(words[j - 1]).endswith("의") and j - 1 > 0: bad += 300   # 「남의 / 집」 — ~의 뒤 명사와 붙임
+            if plain(words[j - 1]).endswith("고") and plain(words[j])[:1] in "가갔간갈오왔와있계싶" and not raw[j - 1].endswith(","): bad += 400   # 「맡기고 / 가신」「하고 / 있었습니다」
+            return bad
+
+        _rows = {}
+
+        def rows_of(a, b):   # words[a:b] 를 3줄 안으로 나눔 → (줄 목록, 벌점) / 3줄에 안 들어가면 (None, 0)
+            if (a, b) in _rows: return _rows[(a, b)]
+            best = {(a, 0): (0.0, None)}   # (끝 낱말, 줄 수) → (벌점, 앞 끝)
+            for j in range(a + 1, b + 1):
+                for r in range(1, SUB_ROWS + 1):
+                    cur = (1e18, None)
+                    for i in range(j - 1, a - 1, -1):
+                        if (i, r - 1) not in best: continue
+                        w = W(i, j)
+                        limit = 1000 if " ".join(raw[i:j]).count("'") == 2 else SUB_PX   # 따옴표 말을 통째로 담을 때만 박스가 화면 끝까지
+                        if w > 1000 and j - i > 1: break
+                        if w > limit and j - i > 1: continue
+                        bad = brk(j) if j < b else 0
+                        if len(plain(" ".join(words[i:j]))) <= 2 and not (i == a and j == b): bad += 250   # 너무 짧은 줄
+                        fill = max(0.0, (SUB_PX - w) / SUB_PX * 10)
+                        c = best[(i, r - 1)][0] + 60 + fill ** 2 + bad
+                        if c < cur[0]: cur = (c, i)
+                    if cur[1] is not None: best[(j, r)] = cur
+            ends = [(best[(b, r)][0], r) for r in range(1, SUB_ROWS + 1) if (b, r) in best]
+            if not ends:
+                _rows[(a, b)] = (None, 0); return _rows[(a, b)]
+            c, r = min(ends)
+            out, j = [], b
+            while j > a:
+                i = best[(j, r)][1]; out.append(" ".join(words[i:j])); j = i; r -= 1
+            _rows[(a, b)] = (out[::-1], c)
+            return _rows[(a, b)]
+
+        best = [0.0] + [1e18] * n; prev = [0] * (n + 1)
         for j in range(1, n + 1):
             for i in range(j - 1, -1, -1):
-                w = W(i, j)
-                piece = " ".join(raw[i:j])
-                limit = 1000 if piece.count("'") == 2 else SUB_PX   # 따옴표 말을 통째로 담을 때만 박스가 화면 끝까지
-                if w > 1000 and j - i > 1: break
-                if w > limit and j - i > 1: continue
-                cnt, cost, _ = best[i]
-                if j == n: bad = 0
-                elif raw[j - 1].endswith(",") or (re.search(BREAK_OK, words[j - 1]) and len(plain(words[j - 1])) > 1): bad = 0
-                else: bad = 200
-                if j < n and DEP.match(plain(words[j])): bad += 1500   # 단위·의존명사로 시작 금지
-                if j < n and plain(words[j - 1]) in NUM_DET: bad += 1500   # 「한 / 장」
-                if j < n - 1 and plain(words[j]) in NUM_DET: bad += 300    # 「집 / 한 채」
-                if j < n and quote_open[j]: bad += 800
-                if j < n and plain(words[j - 1]) in DET: bad += 1500   # 「그 / 할머니께」
-                if j < n and SPACE.match(plain(words[j])): bad += 800
-                if j < n and plain(words[j - 1])[-1:] in "아어워와해여셔져춰" and plain(words[j]).startswith(AUX_HEAD): bad += 600
-                if j < n and "'" in raw[j] and quote_open[j] and len(plain(words[j])) <= 4: bad += 600   # 닫는 따옴표 말만 다음 줄로
-                if len(plain(" ".join(words[i:j]))) <= 2 and not (i == 0 and j == n): bad += 250   # 너무 짧은 조각
-                if rate and not (i == 0 and j == n) and not (last_sent and j == n):   # 줄 마지막 조각은 쉼 동안 남아 있음
-                    d = len(plain(" ".join(words[i:j]))) / rate
-                    if d < 0.7: bad += (0.7 - d) * 900   # 0.7초 안에 지나가는 조각은 읽기 힘듦
-                fill = max(0.0, (SUB_PX - w) / SUB_PX * 10)
-                cand = (cnt + 1, cost + 60 + fill ** 2 + bad, i)
-                if cand[1] < best[j][1]: best[j] = cand
-        parts, j = [], n
+                rs, rc = rows_of(i, j)
+                if rs is None: break
+                c = best[i] + 100 + rc
+                if j < n: c += brk(j) * 2 + (0 if raw[j - 1].endswith(",") or CLAUSE.search(words[j - 1]) else 150)   # 화면 사이 어색한 끊김은 줄 사이보다 더 나쁨
+                d = secs(i, j)
+                if not (i == 0 and j == n) and d < 1.5: c += (1.5 - d) * 400   # 문장 조각이 1.5초 안에 바뀜(짧은 문장 통째는 아래에서 합침)
+                if c < best[j]: best[j], prev[j] = c, i
+        part, j = [], n
         while j > 0:
-            i = best[j][2]; parts.append(" ".join(words[i:j])); j = i
-        out += parts[::-1]
-    return out
+            i = prev[j]; part.append([rows_of(i, j)[0], i == 0 and j == n, secs(i, j)]); j = i
+        screens += part[::-1]
+    # 아주 짧은 문장(1.2초 안)은 다음 화면과 합침(3줄 안일 때)
+    k = 0
+    while k < len(screens) - 1:
+        if screens[k][1] and screens[k][2] < 1.2 and len(screens[k][0]) + len(screens[k + 1][0]) <= SUB_ROWS:
+            screens[k] = [screens[k][0] + screens[k + 1][0], False, screens[k][2] + screens[k + 1][2]]
+            del screens[k + 1]
+        else: k += 1
+    return [s[0] for s in screens]
 
 
 def sub_clean(t):
@@ -387,9 +431,10 @@ def piece_times(l, parts):
 events = []
 for l in lines:
     quote = l["spk"] != "나레이터"
-    parts = split_line(l["text"], l["b"] - l["a"], wrap=quote)
-    ts = piece_times(l, parts)
-    for k, p in enumerate(parts):
+    screens = split_line(l["text"], l["b"] - l["a"], wrap=quote)
+    ts = piece_times(l, [" ".join(sc) for sc in screens])
+    for k, sc in enumerate(screens):
+        p = r"\N".join(sc)
         events.append((ts[k], ts[k + 1], f"'{p}'" if quote else p))
 # 문장 사이 쉼 동안은 앞 자막 유지(다음 자막 시작까지)
 ev = []
@@ -437,7 +482,7 @@ WrapStyle: 2
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Box,{FONT},125,&HFF000000,&HFF000000,&H6A282828,&H6A282828,0,0,0,0,100,100,0,0,3,40,0,5,0,0,0,1
+Style: Box,{FONT},125,&HFF000000,&HFF000000,&HFF000000,&H6A282828,0,0,0,0,100,100,0,0,4,40,0,5,0,0,0,1
 Style: Sub,{FONT},125,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,5,0,5,0,0,0,1
 Style: Title,{FONT},186,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,13,0,5,0,0,0,1
 Style: Cta,{FONT},150,&H0000FFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,11,0,5,0,0,0,1

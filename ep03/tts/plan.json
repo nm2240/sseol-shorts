@@ -22,6 +22,10 @@
   },
   {
    "spk": "나레이터",
+   "text": "아버지 장례를 치르고 처음 가 보는 길이었습니다."
+  },
+  {
+   "spk": "나레이터",
    "text": "풀만 자라 있을 줄 알았던 밭에, 울타리가 둘러져 있었습니다."
   },
   {
@@ -63,6 +67,10 @@
   {
    "spk": "나레이터",
    "text": "저는 그 말이 보상금을 노린 억지라고만 생각했습니다."
+  },
+  {
+   "spk": "나레이터",
+   "text": "서울로 올라오는 차 안에서도 분이 가라앉지 않았습니다."
   },
   {
    "spk": "나레이터",
@@ -126,6 +134,10 @@
   },
   {
    "spk": "나레이터",
+   "text": "측량한다는 말을 듣고, 떠날 채비를 하신 거였습니다."
+  },
+  {
+   "spk": "나레이터",
    "text": "저는 말없이 그 보따리 끈을 풀었습니다."
   },
   {
@@ -151,149 +163,133 @@
  ],
  "chunks": [
   {
-   "v": "Inhwa",
+   "v": "Mikyung",
    "ids": [
     0,
     1,
-    2
-   ],
-   "file": "tts/g_c1bc7970"
-  },
-  {
-   "v": "Inhwa",
-   "ids": [
+    2,
     3,
     4,
-    5
-   ],
-   "file": "tts/g_8bbb8312"
-  },
-  {
-   "v": "Inhwa",
-   "ids": [
+    5,
     6,
-    7
+    7,
+    8
    ],
-   "file": "tts/g_d299b2bc"
+   "file": "tts/g_2af0a615"
   },
   {
    "v": "Jungsoon",
-   "ids": [
-    8
-   ],
-   "file": "tts/g_2cb8410a"
-  },
-  {
-   "v": "Inhwa",
    "ids": [
     9
    ],
-   "file": "tts/g_48145a4e"
+   "file": "tts/g_64f1031e"
   },
   {
-   "v": "Jungsoon",
+   "v": "Mikyung",
    "ids": [
     10
    ],
-   "file": "tts/g_2943659e"
-  },
-  {
-   "v": "Inhwa",
-   "ids": [
-    11,
-    12,
-    13
-   ],
-   "file": "tts/g_c88c3750"
+   "file": "tts/g_8ef7fa85"
   },
   {
    "v": "Jungsoon",
    "ids": [
+    11
+   ],
+   "file": "tts/g_e51f6d39"
+  },
+  {
+   "v": "Mikyung",
+   "ids": [
+    12,
+    13,
     14
    ],
-   "file": "tts/g_5a39a5bf"
+   "file": "tts/g_7f9d65b7"
   },
   {
-   "v": "Inhwa",
+   "v": "Jungsoon",
    "ids": [
-    15,
-    16,
-    17
+    15
    ],
-   "file": "tts/g_eab18a5c"
+   "file": "tts/g_b6dfa9b7"
+  },
+  {
+   "v": "Mikyung",
+   "ids": [
+    16,
+    17,
+    18,
+    19
+   ],
+   "file": "tts/g_73ee5dcf"
   },
   {
    "v": "Dupil",
    "ids": [
-    18
-   ],
-   "file": "tts/g_326baee5"
-  },
-  {
-   "v": "Inhwa",
-   "ids": [
-    19,
     20
    ],
-   "file": "tts/g_50805148"
+   "file": "tts/g_8035bd57"
   },
   {
-   "v": "Dupil",
+   "v": "Mikyung",
    "ids": [
     21,
     22
    ],
-   "file": "tts/g_dfef0202"
+   "file": "tts/g_fbda77e4"
   },
   {
-   "v": "Inhwa",
+   "v": "Dupil",
    "ids": [
     23,
-    24,
-    25
+    24
    ],
-   "file": "tts/g_921d2736"
+   "file": "tts/g_65dad503"
   },
   {
-   "v": "Inhwa",
+   "v": "Mikyung",
    "ids": [
+    25,
     26,
     27,
-    28
-   ],
-   "file": "tts/g_16ae573a"
-  },
-  {
-   "v": "Inhwa",
-   "ids": [
+    28,
     29,
     30,
-    31
+    31,
+    32,
+    33,
+    34
    ],
-   "file": "tts/g_60dae4f2"
+   "file": "tts/g_108f92e5"
   },
   {
-   "v": "Inhwa",
+   "v": "Mikyung",
    "ids": [
-    32
+    35
    ],
-   "file": "tts/g_0cf0c16e"
+   "file": "tts/g_89913b00"
   },
   {
    "v": "Jungsoon",
    "ids": [
-    33
-   ],
-   "file": "tts/g_a9c715ac"
-  },
-  {
-   "v": "Inhwa",
-   "ids": [
-    34,
-    35,
     36
    ],
-   "file": "tts/g_7c8d1f0d"
+   "file": "tts/g_6ec611c4"
+  },
+  {
+   "v": "Mikyung",
+   "ids": [
+    37,
+    38,
+    39
+   ],
+   "file": "tts/g_2b6e2650"
   }
- ]
+ ],
+ "cta": {
+  "voice": "Daeun",
+  "text": "화면을 두 번 터치하면 이야기가 이어집니다.",
+  "file": "tts/cta_5d1327ba"
+ }
 }
