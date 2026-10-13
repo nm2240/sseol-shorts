@@ -145,7 +145,21 @@ def whisper_anchor(words, next_text, est, start):
         key = first[:n]
         hits = [t for t, w in words if w.startswith(key) and start + 0.3 < t and abs(t - est) < 3.0]
         if hits: return min(hits, key=lambda t: abs(t - est)) - 0.2
-    return est
+    # 한글 숫자로 시작하는 줄(이십 년·오백만 원)은 받아쓰기가 숫자로 적음(20년) — ep07 「이십 년 동안」을 못 찾아 앞 줄 중간에서 잘림
+    if re.match(r"^[일이삼사오육칠팔구]?[십백천만]|^[일이삼사오육칠팔구]+(년|원|시간|시|분|살|개월|달|명|번|평)", first):
+        hits = [t for t, w in words if w[:1].isdigit() and start + 0.3 < t and abs(t - est) < 3.0]
+        if hits: return min(hits, key=lambda t: abs(t - est)) - 0.2
+    return None
+
+
+def anchor_by_last(words, cur_text, est, start):
+    """이 줄 마지막 낱말(있었습니다)을 받아쓰기에서 찾아 그 다음 낱말 시작 — 다음 줄 첫 낱말을 못 알아들었을 때(ep08 「장조림」→「당조림」)."""
+    last = plain(cur_text.split()[-1])
+    for n in (3, 2):
+        key = last[-n:]
+        hits = [k for k, (t, w) in enumerate(words[:-1]) if w.endswith(key) and start + 0.3 < t and abs(words[k + 1][0] - est) < 3.0]
+        if hits: return words[min(hits, key=lambda k: abs(words[k + 1][0] - est)) + 1][0] - 0.2
+    return None
 
 
 def align_chunk(y, ids):
@@ -164,7 +178,9 @@ def align_chunk(y, ids):
             end = tail
         else:
             est = head + (tail - head) * acc / tot
-            est = whisper_anchor(words, lines[ids[k + 1]]["text"], est, start)
+            _a = whisper_anchor(words, lines[ids[k + 1]]["text"], est, start)
+            if _a is None: _a = anchor_by_last(words, lines[i]["text"], est, start)
+            if _a is not None: est = _a
             cands = [(abs((a + b) / 2 - est) - 0.15 * min(b - a, 1.0), j) for j, (a, b) in enumerate(inner)
                      if j not in used and (a + b) / 2 > start + 0.3]
             if cands:
@@ -485,9 +501,26 @@ else:
     rows.append(cur)
     cols = [Y, P, W, C] + [W] * len(rows)
     title_rows = [[(r_, G if k >= len(rows) - 2 else cols[k])] for k, r_ in enumerate(rows)]
+# 넓은 줄은 낱말 사이에서 자동으로 나눔(10-13 ep06~ep10 제목이 화면 밖으로 나감 — 경고만 하고 넘어갔었음)
+TITLE_MAX = 1000   # 외곽선 13 포함 1026px — ep04 970px 줄은 화면 안(사용자 확인)
+_fit = []
 for r_ in title_rows:
-    if _TF.getlength(" ".join(w for w, _ in r_)) > 1000: print("경고: 제목줄이 화면보다 넓음", r_)
+    if _TF.getlength(" ".join(w for w, _ in r_)) > TITLE_MAX: print("제목줄 자동 나눔:", " ".join(w for w, _ in r_))
+    cur = []
+    for w, col in r_:
+        for piece in w.split():
+            cand = cur + [(piece, col)]
+            if cur and _TF.getlength(" ".join(x for x, _ in cand)) > TITLE_MAX: _fit.append(cur); cur = [(piece, col)]
+            else: cur = cand
+    if cur: _fit.append(cur)
+title_rows = _fit
 TITLE_PITCH, TITLE_CY, SUB_Y = 204, 950, 930
+TITLE_FS = 186
+if len(title_rows) > 8:   # 8줄(높이 1632px)을 넘으면 글씨를 줄여 화면 안에
+    TITLE_FS = int(186 * 8 / len(title_rows)); TITLE_PITCH = int(204 * 8 / len(title_rows))
+    print(f"제목 {len(title_rows)}줄 → 글씨 {TITLE_FS}")
+for r_ in title_rows:
+    if _TF.getlength(" ".join(w for w, _ in r_)) * TITLE_FS / 186 > 1000: print("경고: 낱말 하나가 화면보다 넓음", r_)
 cta_text = r"화면을 두 번\N터치하면\N이야기가\N이어집니다"
 
 ass = f"""[Script Info]
@@ -510,7 +543,7 @@ if cta_line is not None:
     ass += f"Dialogue: 3,{ass_t(CTA_A)},{ass_t(CTA_B)},Cta,,0,0,0,,{{\\pos(540,520)}}{cta_text}\n"
 y0 = TITLE_CY - TITLE_PITCH * (len(title_rows) - 1) / 2
 for r, row in enumerate(title_rows):
-    txt = " ".join(r"{\c" + col + "}" + w for w, col in row)
+    txt = (r"{\fs%d}" % TITLE_FS if TITLE_FS != 186 else "") + " ".join(r"{\c" + col + "}" + w for w, col in row)
     ass += f"Dialogue: 2,{ass_t(0)},{ass_t(TITLE_END)},Title,,0,0,0,,{{\\pos(540,{y0 + r * TITLE_PITCH:.0f})}}{txt}\n"
 for a, b, s in ev:
     if a < TITLE_END - 0.05: continue   # 첫 줄은 제목이 대신함 — 제목 뒤 끝 조각 반짝임 방지(ep04)
