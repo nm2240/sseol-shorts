@@ -1,5 +1,7 @@
 # 썰쇼츠 타입캐스트 TTS: python tts.py epNN
-# epNN/script.txt 의 [화자·목소리] 줄을 같은 화자끼리 통으로 합성(smart 감정, 앞뒤 묶음 문맥) → epNN/tts/plan.json
+# epNN/script.txt 의 [화자·목소리] 줄을 같은 화자끼리 통으로 합성 → epNN/tts/plan.json
+# 감정: 나레이션(화자 '나레이터'·노란 문구)은 normal 프리셋으로 잔잔하게, 대사만 smart(앞뒤 묶음 문맥)
+#   10-14 사용자 "나레이션은 잔잔해야 하는데 감정이 너무 들어가 있어서 듣기 힘들어. 감정은 대사에만 넣어"
 # 키는 ~/.volcano/keys/typecast (저장소에 넣지 않음). 목소리 이름은 voices_by_age.json 의 영문·한글 둘 다 됨
 import hashlib, json, os, re, sys, time, urllib.request, urllib.error
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -15,7 +17,7 @@ VOICE_ID = {"Myungjoo": "tc_656059fc4db338e38f77d0bc", "Storyteller Jinsub": "tc
 for v in json.load(open(os.path.join(REPO, "voices_by_age.json"), encoding="utf-8"))["voices"]:
     VOICE_ID.setdefault(v["name"], v["voice_id"]); VOICE_ID.setdefault(v["ko"], v["voice_id"])
 
-BANNED = {"Inhwa", "인화", "Jaesun", "재선", "Ilho", "일호", "Byunghun", "병훈"}   # 10-12 "인화는 절대 쓰지 마", 10-13 "재선 앞으로 쓰지 마 삭제"·"일호 삭제"·"병훈 삭제" — 목소리표(voices_by_age.json "banned")에서도 뺌
+BANNED = {"Inhwa", "인화", "Jaesun", "재선", "Ilho", "일호", "Byunghun", "병훈", "Duckchun", "덕춘", "Cheolhoon", "철훈", "Mija", "오미자"}   # 10-12 "인화는 절대 쓰지 마", 10-13 "재선 앞으로 쓰지 마 삭제"·"일호 삭제"·"병훈 삭제", 10-14 "덕춘 삭제. 앞으로 사용금지"·"철훈 삭제 사용 금지"·"오미자 삭제. 금지" — 목소리표(voices_by_age.json "banned")에서도 뺌
 # 소리 표기 {자막|소리}: 자막·제목은 앞쪽(정석), 타입캐스트에는 뒤쪽(발음 나는 대로) — 10-13 사용자 "자막은 정석으로 하고 음성을 발음 나는 대로"
 PRON = re.compile(r"\{([^{}|]*)\|([^{}]*)\}")
 sub_text = lambda t: PRON.sub(r"\1", t)
@@ -53,11 +55,16 @@ for i, l in enumerate(lines):
 gtext = [" ".join(say(lines[k]["raw"]) for k in g) for g in groups]
 
 
+CALM = {"emotion_type": "preset", "emotion_preset": "normal", "emotion_intensity": 1.0}   # 나레이션 — smart는 음높이가 2반음쯤 들뜨고 오르내림이 큼
+is_narr = lambda gi: lines[groups[gi][0]]["spk"] == "나레이터"
+
+
 def tts_group(gi):
     v = lines[groups[gi][0]]["voice"]
     body = {"voice_id": VOICE_ID[v], "text": gtext[gi], "model": "ssfm-v30", "language": "kor",
             "output": {"audio_format": "wav", "audio_tempo": TEMPO},
-            "prompt": {"emotion_type": "smart", "previous_text": gtext[gi - 1] if gi else "",
+            "prompt": CALM if is_narr(gi) else
+                      {"emotion_type": "smart", "previous_text": gtext[gi - 1] if gi else "",
                        "next_text": gtext[gi + 1] if gi + 1 < len(groups) else ""}}
     req = urllib.request.Request("https://api.typecast.ai/v1/text-to-speech", data=json.dumps(body).encode(),
                                  method="POST", headers={"X-API-KEY": KEY, "Content-Type": "application/json"})
@@ -67,7 +74,7 @@ def tts_group(gi):
 chunks = []
 for gi, g in enumerate(groups):
     v = lines[g[0]]["voice"]
-    name = "g_" + hashlib.md5((v + "|" + gtext[gi] + ("" if TEMPO == 1.0 else f"|t{TEMPO}")).encode()).hexdigest()[:8]
+    name = "g_" + hashlib.md5((v + "|" + gtext[gi] + ("" if TEMPO == 1.0 else f"|t{TEMPO}") + ("|calm" if is_narr(gi) else "")).encode()).hexdigest()[:8]
     path = os.path.join(TTS, name + ".wav")
     if not os.path.exists(path):
         try:
@@ -82,13 +89,12 @@ for gi, g in enumerate(groups):
     chunks.append({"v": v, "ids": g, "file": "tts/" + name})
 cta_out = None
 if cta:
-    name = "cta_" + hashlib.md5((cta["voice"] + "|" + cta["text"] + f"|t{TEMPO}" + ("|ctx" if cta["voice"] != "Daeun" else "")).encode()).hexdigest()[:8]
+    name = "cta_" + hashlib.md5((cta["voice"] + "|" + cta["text"] + f"|t{TEMPO}" + ("|ctx" if cta["voice"] != "Daeun" else "") + "|calm").encode()).hexdigest()[:8]
     path = os.path.join(TTS, name + ".wav")
     if not os.path.exists(path):
         body = {"voice_id": VOICE_ID[cta["voice"]], "text": PRON.sub(r"\2", cta["raw"]), "model": "ssfm-v30", "language": "kor",
                 "output": {"audio_format": "wav", "audio_tempo": TEMPO},
-                "prompt": {"emotion_type": "smart", "previous_text": say(lines[cta["pos"] - 1]["raw"]) if cta["pos"] else "",
-                           "next_text": say(lines[cta["pos"]]["raw"]) if cta["pos"] < len(lines) else ""}}
+                "prompt": CALM}   # 노란 문구도 나레이션 — 잔잔하게(10-14)
         req = urllib.request.Request("https://api.typecast.ai/v1/text-to-speech", data=json.dumps(body).encode(),
                                      method="POST", headers={"X-API-KEY": KEY, "Content-Type": "application/json"})
         open(path, "wb").write(urllib.request.urlopen(req, timeout=120).read()); print(name, cta["voice"], "안내")

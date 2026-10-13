@@ -318,15 +318,6 @@
   },
   {
    "age_group": "50~60대 여성",
-   "ko": "오미자",
-   "name": "Mija",
-   "voice_id": "tc_6059db64e2d12a32cce1b0c7",
-   "note": "",
-   "api_gender": "female",
-   "api_age": "middle_age"
-  },
-  {
-   "age_group": "50~60대 여성",
    "ko": "연화",
    "name": "Yeonhwa",
    "voice_id": "tc_600697fd8a8ea9b977284703",
@@ -561,15 +552,6 @@
   },
   {
    "age_group": "30~40대 남성",
-   "ko": "철훈",
-   "name": "Cheolhoon",
-   "voice_id": "tc_685cdfad4027aeec7d097a28",
-   "note": "",
-   "api_gender": "male",
-   "api_age": "middle_age"
-  },
-  {
-   "age_group": "30~40대 남성",
    "ko": "석표",
    "name": "Seokpyo",
    "voice_id": "tc_654c82dd5fa2797667b1c544",
@@ -624,15 +606,6 @@
   },
   {
    "age_group": "70~80대 남성",
-   "ko": "덕춘",
-   "name": "Duckchun",
-   "voice_id": "tc_5c3c52c95827e00008dd7f34",
-   "note": "",
-   "api_gender": "male",
-   "api_age": "elder"
-  },
-  {
-   "age_group": "70~80대 남성",
    "ko": "학철",
    "name": "Hakchul",
    "voice_id": "tc_63a3d9d14b235ddd6541a78e",
@@ -673,6 +646,24 @@
    "name": "Byunghun",
    "voice_id": "tc_694395d43f2c8d9d43e9a897",
    "why": "10-13 사용자 '병훈 삭제'"
+  },
+  {
+   "ko": "덕춘",
+   "name": "Duckchun",
+   "voice_id": "tc_5c3c52c95827e00008dd7f34",
+   "why": "10-14 사용자 '덕춘 삭제. 앞으로 사용금지' (ep11 나레이터 → 창배로 교체)"
+  },
+  {
+   "ko": "철훈",
+   "name": "Cheolhoon",
+   "voice_id": "tc_685cdfad4027aeec7d097a28",
+   "why": "10-14 사용자 '철훈 삭제 사용 금지' (ep11 아들 → 필재로 교체)"
+  },
+  {
+   "ko": "오미자",
+   "name": "Mija",
+   "voice_id": "tc_6059db64e2d12a32cce1b0c7",
+   "why": "10-14 사용자 '오미자 삭제. 금지' (ep14 나레이터 → 경숙으로 교체)"
   }
  ]
 }
