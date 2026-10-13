@@ -22,10 +22,11 @@ description: 썰쇼츠 — 「썰풀때는」(@썰-풀때는) 벤치마킹 시�
 11. **나레이션 말끝은 ~습니다·~어요·~죠를 섞는다**(10-13). 비율·쓰는 곳은 SCRIPT_FORMULA.md §2.
 12. **창작 사연이다**(10-13 사용자 "없는 이야기라는 거지?" → "좋아. 이렇게 만들면 돼"). 제목·해시태그·설명에 **"실화" 금지**, 실제 인물·기관·구체 지명 특정 금지. 편마다 `epNN\description.txt`(제목·설명 두 줄·「※ 이 이야기는 각색한 창작 사연입니다…」·해시태그)를 만든다.
 13. **소재는 `소재후보.md`에서**: 사용자가 준 채널 5개(썰보관소·쇼츠노바·찐썰전·썰풀때는·사연우체통) 인기 쇼츠를 채널 중간값 대비 배수로 정렬·agy 분석한 추천 순서. 설정만 빌리고 관계·물건·반전·대사는 새로, script.txt 머리에 원본 링크를 적고 소재후보.md "사용" 칸에 표시. 한 편 대본을 보여 달라면 보여 주고, "만들라"면 `python script_stats.py epNN`(길이·대사 비율·말끝 비율·연속·노란 문구 위치)으로 점검 후 바로 제작.
+14. **매일 새벽 4시 4편 자동 제작**(10-13 "소재 찾아서 매일 오전 4시에 4개씩 만들어") — 순서·고르는 법·멈추는 경우는 **`자동제작.md`**. 소재 찾기는 `python scan_sources.py`(채널 5개 최신 목록 → 새 인기 편 agy 분석 → 소재후보.md 표에 추가), 고르기는 `--list`. 예약은 CronCreate(세션 한정·7일 만료)라 새 세션마다 CronList로 확인하고 없으면 다시 건다. 자동 제작은 대본을 먼저 보여 주지 않는다.
 
 ## 제작 순서
 ```
-1. 소재(다른 채널 영상·글) → SCRIPT_FORMULA.md 공식으로 대본 → 사용자에게 먼저 보여 줌 → epNN\script.txt(아래 형식)
+1. 소재(다른 채널 영상·글) → SCRIPT_FORMULA.md 공식으로 대본 → (보여 달라고 할 때만 먼저 보여 줌, 자동 제작은 바로) → epNN\script.txt(아래 형식)
 2. 인물 나이 → 목소리 고르기(내가 정함, 이미 쓴 인물은 그대로)
 3. python tts.py epNN          # 타입캐스트 합성 → epNN\tts\plan.json (키: ~/.volcano/keys/typecast)
 4. python render.py epNN       # 줄 정렬·자막·배경 → epNN\out\epNN_final.mp4 + 최종본 복사
@@ -79,7 +80,7 @@ render.py는 줄마다 받아쓰기(faster-whisper medium, CPU)로 자막을 맞
 
 ## 폴더
 ```
-render.py  tts.py  check.py  voices_by_age.json  SKILL.md  SCRIPT_FORMULA.md
+render.py  tts.py  check.py  script_stats.py  scan_sources.py  voices_by_age.json  SKILL.md  SCRIPT_FORMULA.md  자동제작.md  소재후보.md
 fonts\  bg\(풍경 mp4는 SOURCES.md 보고 받기)  대본분석.md(레퍼런스 분석)
 epNN\script.txt  epNN\tts\plan.json  epNN\voice_samples\  epNN\out\(무시)
 후보_썰보관소\(각색 후보 대본)   썰쇼츠 최종본\(완성본, 무시)
