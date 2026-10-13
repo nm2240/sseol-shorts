@@ -11,6 +11,8 @@ for i, l in enumerate(L):
     tot += len(a); ok += m
     if m < len(a): bad.append((i, l["text"], "".join(w + " " for _, w in l.get("words", []))))
 print(f"받아쓰기 일치 {ok}/{tot}")
+empty = [i for i, l in enumerate(L) if len(norm("".join(w for _, w in l.get("words", [])))) < max(2, len(norm(l["text"])) // 4)]
+if empty: print(f"⚠ 받아쓰기가 거의 빈 줄 {empty} — 타입캐스트가 알아들을 수 없는 소리를 낸 것일 수 있음(ep07 끝맺음 묶음). 원본 tts 묶음을 large-v3로 들어 보고 다시 합성")
 for i, t, w in bad: print(f"  {i:2d} 대본: {t}\n     들림: {w}")
 ass = open(os.path.join(OUT, "subs.ass"), encoding="utf-8-sig").read()
 ts = lambda s: (lambda h, m, x: int(h) * 3600 + int(m) * 60 + float(x))(*s.split(":"))
