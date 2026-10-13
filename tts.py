@@ -15,23 +15,27 @@ VOICE_ID = {"Myungjoo": "tc_656059fc4db338e38f77d0bc", "Storyteller Jinsub": "tc
 for v in json.load(open(os.path.join(REPO, "voices_by_age.json"), encoding="utf-8"))["voices"]:
     VOICE_ID.setdefault(v["name"], v["voice_id"]); VOICE_ID.setdefault(v["ko"], v["voice_id"])
 
-BANNED = {"Inhwa", "인화"}   # 10-12 사용자 "인화는 절대 쓰지 마"
+BANNED = {"Inhwa", "인화", "Jaesun", "재선", "Ilho", "일호"}   # 10-12 "인화는 절대 쓰지 마", 10-13 "재선 앞으로 쓰지 마 삭제"·"일호 삭제" — 목소리표(voices_by_age.json "banned")에서도 뺌
+# 소리 표기 {자막|소리}: 자막·제목은 앞쪽(정석), 타입캐스트에는 뒤쪽(발음 나는 대로) — 10-13 사용자 "자막은 정석으로 하고 음성을 발음 나는 대로"
+PRON = re.compile(r"\{([^{}|]*)\|([^{}]*)\}")
+sub_text = lambda t: PRON.sub(r"\1", t)
 lines = []
 for l in open(os.path.join(ROOT, "script.txt"), encoding="utf-8-sig"):
     m = re.match(r"\[([^·\]]+)·([^\]]+)\]\s*(.+)", l.strip())
-    if m: lines.append({"spk": m.group(1), "voice": m.group(2), "text": m.group(3)})
+    if m: lines.append({"spk": m.group(1), "voice": m.group(2), "raw": m.group(3), "text": sub_text(m.group(3))})
 # 노란 문구 읽는 목소리 — 10-13 처음엔 20대 여성 안내(Daeun, ep04·ep03) → 같은 날 "노란 문구는 나레이션하던 인물로 그냥 이어서 해"
 # → 새 편은 >>> [나레이터·나레이터 목소리] 로 적고, 앞뒤 줄을 문맥으로 넣어 이어 읽는 말투로 합성
 cta, _n = None, 0
 for l in open(os.path.join(ROOT, "script.txt"), encoding="utf-8-sig"):
     if re.match(r"\[([^·\]]+)·([^\]]+)\]\s*(.+)", l.strip()): _n += 1
     m = re.match(r">>>\s*\[([^·\]]+)·([^\]]+)\]\s*(.+)", l.strip())
-    if m: cta = {"spk": m.group(1), "voice": m.group(2), "text": m.group(3), "pos": _n}
+    if m: cta = {"spk": m.group(1), "voice": m.group(2), "raw": m.group(3), "text": sub_text(m.group(3)), "pos": _n}
 bad = sorted(({l["voice"] for l in lines} | ({cta["voice"]} if cta else set())) & BANNED)
 if bad: sys.exit(f"금지 목소리: {bad} — 다른 목소리로 바꿀 것")
 
 
-def say(text):   # 따옴표는 소리에 필요 없음
+def say(text):   # 따옴표는 소리에 필요 없음, {자막|소리}는 소리 쪽으로
+    text = PRON.sub(r"\2", text)
     text = re.sub(r"(^|\s)네가(\s)", r"\1니가\2", text.replace('"', ""))   # '네가'가 '내가'로 들림(ep04) → 소리만 '니가', 자막은 대본대로
     return text.strip()
 
@@ -46,7 +50,7 @@ for i, l in enumerate(lines):
         g.append(i)
     else:
         groups.append([i])
-gtext = [" ".join(say(lines[k]["text"]) for k in g) for g in groups]
+gtext = [" ".join(say(lines[k]["raw"]) for k in g) for g in groups]
 
 
 def tts_group(gi):
@@ -81,10 +85,10 @@ if cta:
     name = "cta_" + hashlib.md5((cta["voice"] + "|" + cta["text"] + f"|t{TEMPO}" + ("|ctx" if cta["voice"] != "Daeun" else "")).encode()).hexdigest()[:8]
     path = os.path.join(TTS, name + ".wav")
     if not os.path.exists(path):
-        body = {"voice_id": VOICE_ID[cta["voice"]], "text": cta["text"], "model": "ssfm-v30", "language": "kor",
+        body = {"voice_id": VOICE_ID[cta["voice"]], "text": PRON.sub(r"\2", cta["raw"]), "model": "ssfm-v30", "language": "kor",
                 "output": {"audio_format": "wav", "audio_tempo": TEMPO},
-                "prompt": {"emotion_type": "smart", "previous_text": say(lines[cta["pos"] - 1]["text"]) if cta["pos"] else "",
-                           "next_text": say(lines[cta["pos"]]["text"]) if cta["pos"] < len(lines) else ""}}
+                "prompt": {"emotion_type": "smart", "previous_text": say(lines[cta["pos"] - 1]["raw"]) if cta["pos"] else "",
+                           "next_text": say(lines[cta["pos"]]["raw"]) if cta["pos"] < len(lines) else ""}}
         req = urllib.request.Request("https://api.typecast.ai/v1/text-to-speech", data=json.dumps(body).encode(),
                                      method="POST", headers={"X-API-KEY": KEY, "Content-Type": "application/json"})
         open(path, "wb").write(urllib.request.urlopen(req, timeout=120).read()); print(name, cta["voice"], "안내")

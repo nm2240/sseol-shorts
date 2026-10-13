@@ -201,7 +201,7 @@ CTA_KEY = None
 for _k, _l in enumerate(SCRIPT):
     if _l.startswith(">>>"):
         _prev = [re.match(r"\[[^\]]+\]\s*(.+)", x) for x in SCRIPT[:_k]]
-        _prev = [m.group(1).strip() for m in _prev if m]
+        _prev = [re.sub(r"\{([^{}|]*)\|[^{}]*\}", r"\1", m.group(1)).strip() for m in _prev if m]   # {자막|소리} → 자막
         CTA_KEY = _prev[-1] if _prev else None
 CTA_DUR = 3.0         # 문구가 떠 있는 동안 본 나레이션 멈춤 → 문구가 사라지는 순간 다음 줄 시작(10-12)
 # 노란 문구를 읽는 목소리(10-13: ep03·ep04는 20대 여성 안내 Daeun, 새 편부터 나레이터가 이어서) — 문구 뜨고 0.15초 뒤 시작, 길면 문구를 그만큼 더 띄움

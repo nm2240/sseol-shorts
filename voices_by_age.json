@@ -192,15 +192,6 @@
   },
   {
    "age_group": "30~40대 여성",
-   "ko": "재선",
-   "name": "Jaesun",
-   "voice_id": "tc_684a7a1446e2a628b5b07230",
-   "note": "",
-   "api_gender": "female",
-   "api_age": "middle_age"
-  },
-  {
-   "age_group": "30~40대 여성",
    "ko": "혜원",
    "name": "Hyewon",
    "voice_id": "tc_640997db84d8713b1114f32a",
@@ -276,15 +267,6 @@
    "ko": "소영",
    "name": "Soyoung",
    "voice_id": "tc_5c789c317ad86500073a02cc",
-   "note": "",
-   "api_gender": "female",
-   "api_age": "middle_age"
-  },
-  {
-   "age_group": "50~60대 여성",
-   "ko": "재선",
-   "name": "Jaesun",
-   "voice_id": "tc_684a7a1446e2a628b5b07230",
    "note": "",
    "api_gender": "female",
    "api_age": "middle_age"
@@ -632,11 +614,11 @@
    "api_age": "elder"
   },
   {
-   "age_group": "50~60대 남성",
+   "age_group": "70~80대 남성",
    "ko": "명일",
    "name": "Myungil",
    "voice_id": "tc_62d66c2d1523be99355fda02",
-   "note": "",
+   "note": " 10-13 사용자: 50~60대로는 너무 나이 들어 보여 70대로 옮김",
    "api_gender": "male",
    "api_age": "elder"
   },
@@ -669,21 +651,31 @@
   },
   {
    "age_group": "70~80대 남성",
-   "ko": "일호",
-   "name": "Ilho",
-   "voice_id": "tc_61945d9c2c11c2c9fd934340",
-   "note": "",
-   "api_gender": "male",
-   "api_age": "elder"
-  },
-  {
-   "age_group": "70~80대 남성",
    "ko": "영길",
    "name": "Younggil",
    "voice_id": "tc_5ebea13564afaf00087fc2e7",
    "note": "",
    "api_gender": "male",
    "api_age": "elder"
+  }
+ ],
+ "banned": [
+  {
+   "ko": "인화",
+   "name": "Inhwa",
+   "why": "10-12 사용자 '인화는 절대 쓰지마'"
+  },
+  {
+   "ko": "재선",
+   "name": "Jaesun",
+   "voice_id": "tc_684a7a1446e2a628b5b07230",
+   "why": "10-13 사용자 '재선 앞으로 쓰지마 삭제'"
+  },
+  {
+   "ko": "일호",
+   "name": "Ilho",
+   "voice_id": "tc_61945d9c2c11c2c9fd934340",
+   "why": "10-13 사용자 '일호 삭제'"
   }
  ]
 }
