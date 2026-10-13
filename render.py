@@ -586,7 +586,7 @@ for o, d in zip(order, durs):
 inputs, fl, prev, off = [], [], "v0", 0.0
 for k, (o, d) in enumerate(use):
     inputs += ["-i", os.path.join(BG, o + ".mp4")]
-    fl.append(f"[{k}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1,"
+    fl.append(f"[{k}:v]scale=1080:1920:force_original_aspect_ratio=increase:out_range=tv,crop=1080:1920,fps=30,setsar=1,"
               f"eq=brightness=-0.04:saturation=0.9,format=yuv420p[v{k}]")
 for k in range(1, len(use)):
     off += use[k - 1][1] - XF
@@ -598,7 +598,7 @@ na = len(use)
 final = os.path.join(OUT, f"{EP}_final.mp4")
 run(["ffmpeg", "-v", "error", "-y", *inputs, "-i", os.path.join(OUT, "narr.wav"),
      "-filter_complex", ";".join(fl), "-map", "[vout]", "-map", f"{na}:a",
-     "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
+     "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-color_range", "tv",   # p39410000은 풀레인지(yuvj420p) — 맨 앞에 오면 완성본이 yuvj420p가 됨(10-14 ep14)
      "-profile:v", "high", "-c:a", "aac", "-b:a", "192k",
      "-t", f"{DUR:.3f}", "-movflags", "+faststart", final])
 run(["ffmpeg", "-v", "error", "-y", "-i", os.path.join(OUT, "narr.wav"), "-c:a", "libmp3lame", "-b:a", "192k",
