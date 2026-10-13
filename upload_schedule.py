@@ -40,6 +40,33 @@ def future_slots(now: dt.datetime, days: int = 60):
         day += dt.timedelta(days=1)
 
 
+def make_txt(mp4: Path) -> bool:
+    """사용자가 영상만 새영상에 넣었을 때(10-13 "내가 검수하고 새영상으로 넣어 놓을께") —
+    epNN/description.txt(제목: …/설명:/…/#해시태그)를 업로더 형식 [제목]/[설명]/[해시태그] 로 옆에 만든다."""
+    src = REPO / mp4.name.split("_")[0] / "description.txt"
+    if not src.exists():
+        return False
+    title, desc, tags, cur = "", [], [], None
+    for line in src.read_text(encoding="utf-8-sig").splitlines():
+        t = line.strip()
+        if t.startswith("제목:"):
+            title, cur = t[3:].strip(), None
+        elif t.startswith("설명:"):
+            cur = desc
+            if t[3:].strip():
+                desc.append(t[3:].strip())
+        elif t and all(w.startswith("#") for w in t.split()):
+            tags += t.split()
+        elif cur is not None:
+            cur.append(line.rstrip())
+    if not title:
+        return False
+    body = "\n".join(desc).strip()
+    mp4.with_suffix(".txt").write_text(f"[제목]\n{title}\n\n[설명]\n{body}\n\n[해시태그]\n{' '.join(tags)}\n",
+                                       encoding="utf-8")
+    return True
+
+
 def log(msg: str):
     line = f"{dt.datetime.now():%Y-%m-%d %H:%M:%S}  {msg}"
     print(line)
@@ -65,6 +92,9 @@ def main():
     taken = {q.get("쏠때", "")[:16].replace("T", " ") for q in mine}
 
     vids = sorted(p for p in NEW.glob("*.mp4") if p.name not in queued)
+    for v in vids:
+        if not v.with_suffix(".txt").exists() and go and make_txt(v):
+            log(f"제목 txt 만듦(epNN/description.txt) {v.with_suffix('.txt').name}")
     no_txt = [p.name for p in vids if not p.with_suffix(".txt").exists()]
     vids = [p for p in vids if p.with_suffix(".txt").exists()]
     for n in no_txt:
