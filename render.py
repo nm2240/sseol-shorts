@@ -224,7 +224,8 @@ for c in chunks:
         a0, b0 = soft_edges(y, a, b)
         a0 = max(0.0, min(a0, a - 0.05))
         if k > 0: a0 = max(a0, (spans[k - 1][1] + a) / 2)
-        if k + 1 < len(spans): b0 = min(b0, (b + spans[k + 1][0]) / 2)
+        # 다음 문장과 붙여 읽은 곳(쉼 0.25초 미만)은 가운데에서 자르면 끝음절 여운이 잘림(10-14 ep11 줄 끝 -47dB) — 다음 말소리 0.06초 앞까지는 여운을 살림
+        if k + 1 < len(spans): b0 = min(b0, max((b + spans[k + 1][0]) / 2, spans[k + 1][0] - 0.06))
         seg = y[int(a0 * SR):int(b0 * SR)].copy()
         if cta_start is not None:   # 문구 다음 줄: 첫 숨소리부터 문구가 사라지는 순간에 시작(ep04: 숨이 문구 위로 새던 것 고침)
             t = cta_start; lines[i]["seg0"] = cta_start; cta_start = None
