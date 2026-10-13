@@ -597,15 +597,6 @@
   },
   {
    "age_group": "50~60대 남성",
-   "ko": "병훈",
-   "name": "Byunghun",
-   "voice_id": "tc_694395d43f2c8d9d43e9a897",
-   "note": "",
-   "api_gender": "male",
-   "api_age": "middle_age"
-  },
-  {
-   "age_group": "50~60대 남성",
    "ko": "중현",
    "name": "Joonghyun",
    "voice_id": "tc_61cd3cc126463f411925e8a6",
@@ -676,6 +667,12 @@
    "name": "Ilho",
    "voice_id": "tc_61945d9c2c11c2c9fd934340",
    "why": "10-13 사용자 '일호 삭제'"
+  },
+  {
+   "ko": "병훈",
+   "name": "Byunghun",
+   "voice_id": "tc_694395d43f2c8d9d43e9a897",
+   "why": "10-13 사용자 '병훈 삭제'"
   }
  ]
 }
