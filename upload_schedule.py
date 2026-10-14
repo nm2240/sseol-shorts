@@ -1,8 +1,10 @@
 # 썰쇼츠 업로드 예약(10-13 사용자 "업로드시간은 5시20분, 이후 3시간 32분 후 한편씩 다음영상 업로드"
 #   + "매일 반복해서 해 주고 … 매일 7분씩 시간을 늘려 예약 걸어줘")
 #   썰쇼츠 최종본\새영상 의 mp4 가운데 아직 쇼츠업로더 발사대기에 없는 것 → 가장 이른 빈 칸에 예약.
-#   칸: 2026-10-14 05:20 기준, 날마다 7분씩 늦춤, 하루 5칸 3시간 32분 간격(05:20·08:52·12:24·15:56·19:28 → 다음 날 05:27…).
-#       12일 주기로 다시 05:20부터(10-13 사용자 "10일 주기에 다시 05:20부터 예약" → "12일로 하자") — 12일째 06:37…20:45, 13일째 05:20.
+#   칸: 10-15 사용자 "오전 7시 26분 첫 시작에 10시 36분, 2시 52분 이렇게 올려" + "이 세 시각 + 날마다 7분씩"
+#       → 2026-10-15 하루 3칸 07:26·10:36·14:52 기준, 날마다 7분씩 늦춤(10-16 07:33·10:43·14:59 …).
+#       12일 주기로 다시 07:26부터(10-13 "12일로 하자") — 12일째 08:43·11:53·16:09, 13일째 07:26.
+#       (10-13~14는 05:20부터 3시간 32분 간격 하루 5칸이었음 — 05:20은 업로더 심야 금지에 걸려 늦게 나갔음)
 #   같은 이름 .txt(제목·설명·해시태그)가 없는 영상은 걸지 않는다(사용자 확인 뒤 txt와 함께 넣는 규칙).
 #   python upload_schedule.py          무엇을 언제 걸지 보기만
 #   python upload_schedule.py --go     실제로 예약(쇼츠업로더 run.py --go --pick … --at …)
@@ -17,19 +19,16 @@ UP = Path(os.environ["USERPROFILE"]) / "Documents" / "쇼츠업로더"
 QUEUE = UP / "발사대기.json"
 LOG = REPO / "upload_schedule.log"
 
-BASE_DAY = dt.date(2026, 10, 14)
-START = 5 * 60 + 20          # 05:20
-GAP = 3 * 60 + 32            # 3시간 32분
+BASE_DAY = dt.date(2026, 10, 15)
+TIMES = [7 * 60 + 26, 10 * 60 + 36, 14 * 60 + 52]   # 07:26·10:36·14:52 (첫날 기준)
 STEP = 7                     # 날마다 7분씩
-PER_DAY = 5
-CYCLE = 12                   # 12일마다 다시 05:20부터
+CYCLE = 12                   # 12일마다 다시 07:26부터
 LEAD = dt.timedelta(minutes=20)   # 심사확인(10분 주기)이 집어 가도록 최소 20분 앞
 
 
 def day_slots(day: dt.date) -> list:
     d = (day - BASE_DAY).days % CYCLE
-    first = dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=START + STEP * d)
-    return [first + dt.timedelta(minutes=GAP * k) for k in range(PER_DAY)]
+    return [dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=t + STEP * d) for t in TIMES]
 
 
 def future_slots(now: dt.datetime, days: int = 60):
