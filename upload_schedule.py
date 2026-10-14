@@ -7,6 +7,7 @@
 #   python upload_schedule.py          무엇을 언제 걸지 보기만
 #   python upload_schedule.py --go     실제로 예약(쇼츠업로더 run.py --go --pick … --at …)
 #   python upload_schedule.py --slots 3   앞으로 3일 칸만 보기
+#   python upload_schedule.py --go --max 4   앞에서 4편만 걸기
 import datetime as dt, json, os, subprocess, sys
 from pathlib import Path
 
@@ -97,6 +98,8 @@ def main():
             log(f"제목 txt 만듦(epNN/description.txt) {v.with_suffix('.txt').name}")
     no_txt = [p.name for p in vids if not p.with_suffix(".txt").exists()]
     vids = [p for p in vids if p.with_suffix(".txt").exists()]
+    if "--max" in sys.argv:   # 10-15 사용자 "오늘 몫 4편만" — 앞에서 N편만 걸고 나머지는 새영상에 둠
+        vids = vids[:int(sys.argv[sys.argv.index("--max") + 1])]
     for n in no_txt:
         log(f"건너뜀(제목 txt 없음) {n}")
     if not vids:
