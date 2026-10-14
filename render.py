@@ -3,6 +3,7 @@
 # 편마다 다른 값(제목줄·노란 문구 위치·배경 순서)은 epNN/script.txt 에서 읽는다 — SKILL.md 참고
 import json, os, re, subprocess, sys
 import numpy as np, soundfile as sf
+sys.stdout.reconfigure(errors="replace")   # cp949 콘솔에서 — 같은 글자 때문에 렌더가 죽지 않게(10-14 ep16)
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 if len(sys.argv) < 2: sys.exit("사용법: python render.py epNN")
