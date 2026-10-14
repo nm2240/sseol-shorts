@@ -14,7 +14,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "저는 그게 참 서운했어요. 그런데 제가 완전히 잘못 알고 있었습니다."
+   "text": "저는 그게 참 서운했어요."
   },
   {
    "spk": "나레이터",
@@ -147,7 +147,7 @@
    "ids": [
     0
    ],
-   "file": "tts/g_74cd6352"
+   "file": "tts/g_9dec6285"
   },
   {
    "v": "Myungil",
@@ -166,7 +166,7 @@
     6,
     7
    ],
-   "file": "tts/g_20a756de"
+   "file": "tts/g_8fc2484e"
   },
   {
    "v": "Myungil",
@@ -185,7 +185,7 @@
     13,
     14
    ],
-   "file": "tts/g_147e768a"
+   "file": "tts/g_06ec8291"
   },
   {
    "v": "Miseon",
@@ -211,7 +211,7 @@
     21,
     22
    ],
-   "file": "tts/g_8065abdc"
+   "file": "tts/g_30660e88"
   },
   {
    "v": "Myungil",
@@ -227,7 +227,7 @@
     25,
     26
    ],
-   "file": "tts/g_77616f0f"
+   "file": "tts/g_12e3aa4a"
   },
   {
    "v": "Miseon",
@@ -250,7 +250,7 @@
     30,
     31
    ],
-   "file": "tts/g_da0549e3"
+   "file": "tts/g_11d91b81"
   },
   {
    "v": "Miseon",
@@ -265,12 +265,12 @@
     33,
     34
    ],
-   "file": "tts/g_289b1967"
+   "file": "tts/g_5aad0704"
   }
  ],
  "cta": {
   "voice": "Miseon",
   "text": "화면을 두 번 터치하면 이야기가 이어집니다.",
-  "file": "tts/cta_457ac320"
+  "file": "tts/cta_1ba77b5e"
  }
 }

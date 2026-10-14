@@ -1,5 +1,6 @@
 # 썰풀때는 완성본 점검: 받아쓰기 일치·노란 문구·틱·줄 끝 여운·짧은 자막·영상 규격
 import json, os, re, sys, subprocess, difflib, numpy as np, soundfile as sf
+sys.stdout.reconfigure(encoding="utf-8")   # ⚠ 같은 글자가 cp949 콘솔에서 죽지 않게
 EP = sys.argv[1]; OUT = os.path.join(EP, "out")
 L = json.load(open(os.path.join(OUT, "lines_timed.json"), encoding="utf-8"))
 y, sr = sf.read(os.path.join(OUT, "narr.wav")); y = y if y.ndim == 1 else y.mean(1)
@@ -14,6 +15,12 @@ print(f"받아쓰기 일치 {ok}/{tot}")
 empty = [i for i, l in enumerate(L) if len(norm("".join(w for _, w in l.get("words", [])))) < max(2, len(norm(l["text"])) // 4)]
 if empty: print(f"⚠ 받아쓰기가 거의 빈 줄 {empty} — 타입캐스트가 알아들을 수 없는 소리를 낸 것일 수 있음(ep07 끝맺음 묶음). 원본 tts 묶음을 large-v3로 들어 보고 다시 합성")
 for i, t, w in bad: print(f"  {i:2d} 대본: {t}\n     들림: {w}")
+# 줄 경계 어긋남: 줄 길이에 비해 말 속도가 튀면 앞뒤 줄로 말이 넘어간 것(10-14 ep12 「남편은 마지막까지,」가 앞 줄 자막에 붙음 → 초당 9.3자)
+#   대사(따옴표)는 감정 쉼("너, … 이게")이 있어 빼고 나레이션만, 그냥 빠르게 읽은 줄(1.37배)까지는 정상 — 어긋난 줄은 1.6배
+rate = [(len(norm(l["text"])) / max(l["b"] - l["a"], 0.1), i) for i, l in enumerate(L) if len(norm(l["text"])) >= 8 and '"' not in l["text"]]
+med = float(np.median([r for r, _ in rate]))
+odd = [(i, round(r, 1)) for r, i in rate if r > med * 1.45 or r < med * 0.65]
+print(f"줄 말 속도 중간값 초당 {med:.1f}자" + (f", ⚠ 튀는 줄 {odd} — 줄 경계가 어긋났는지 받아쓰기로 확인" if odd else ", 튀는 줄 없음"))
 ass = open(os.path.join(OUT, "subs.ass"), encoding="utf-8-sig").read()
 ts = lambda s: (lambda h, m, x: int(h) * 3600 + int(m) * 60 + float(x))(*s.split(":"))
 cta = re.search(r"Dialogue: 3,([^,]+),([^,]+),Cta", ass); ca, cb = ts(cta.group(1)), ts(cta.group(2))

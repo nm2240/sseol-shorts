@@ -14,7 +14,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "저는 그런 동생이 참 얄미웠어요. 그런데 제가 완전히 잘못 알고 있었습니다."
+   "text": "저는 그런 동생이 참 얄미웠어요."
   },
   {
    "spk": "나레이터",
@@ -66,10 +66,6 @@
   },
   {
    "spk": "나레이터",
-   "text": "가게 문을 닫는 날이 오면, 저는 기댈 데가 하나도 없었으니까요."
-  },
-  {
-   "spk": "나레이터",
    "text": "가게 형편이 어려워서, 저는 연금 한 번 부어 본 적이 없었습니다."
   },
   {
@@ -86,7 +82,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "납부자 칸에는, 동생 이름이 적혀 있었습니다."
+   "text": "연금을 낸 사람 칸에는, 동생 이름이 적혀 있었습니다."
   },
   {
    "spk": "나레이터",
@@ -95,10 +91,6 @@
   {
    "spk": "나레이터",
    "text": "한 달에 이십만 원씩, 십 년이면 이천사백만 원입니다."
-  },
-  {
-   "spk": "나레이터",
-   "text": "택시 벌이로는 결코 적지 않은 돈이었죠."
   },
   {
    "spk": "나레이터",
@@ -127,10 +119,6 @@
   {
    "spk": "나레이터",
    "text": "늘 빠듯하다던 동생의 돈이, 전부 제 노후로 가고 있었던 거죠."
-  },
-  {
-   "spk": "나레이터",
-   "text": "동생은 그동안 점심도, 기사 식당에서 제일 싼 것만 먹었다고 하더라고요."
   },
   {
    "spk": "남동생",
@@ -167,11 +155,11 @@
  ],
  "chunks": [
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
     0
    ],
-   "file": "tts/g_0adb6964"
+   "file": "tts/g_08c87a80"
   },
   {
    "v": "Joonghyun",
@@ -181,7 +169,7 @@
    "file": "tts/g_b3af67cd"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
     2,
     3,
@@ -190,7 +178,7 @@
     6,
     7
    ],
-   "file": "tts/g_b29acade"
+   "file": "tts/g_732cb023"
   },
   {
    "v": "Joonghyun",
@@ -200,12 +188,12 @@
    "file": "tts/g_29279227"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
     9,
     10
    ],
-   "file": "tts/g_74dbda61"
+   "file": "tts/g_44c56711"
   },
   {
    "v": "Joonghyun",
@@ -215,11 +203,11 @@
    "file": "tts/g_0f63c04e"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
     12
    ],
-   "file": "tts/g_e186e24d"
+   "file": "tts/g_d83a69a6"
   },
   {
    "v": "Joonghyun",
@@ -229,7 +217,7 @@
    "file": "tts/g_f01fe406"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
     14,
     15,
@@ -240,85 +228,82 @@
     20,
     21,
     22,
-    23,
-    24,
-    25
+    23
    ],
-   "file": "tts/g_1e1c39e8"
+   "file": "tts/g_2a623fac"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
-    26
+    24
    ],
-   "file": "tts/g_6b0a427a"
+   "file": "tts/g_0370e1ac"
   },
   {
    "v": "Joonghyun",
    "ids": [
-    27,
-    28
+    25,
+    26
    ],
    "file": "tts/g_1d1b7b8a"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
+   "ids": [
+    27
+   ],
+   "file": "tts/g_5be353cc"
+  },
+  {
+   "v": "Joonghyun",
+   "ids": [
+    28
+   ],
+   "file": "tts/g_6d579472"
+  },
+  {
+   "v": "Kyungsook",
    "ids": [
     29
    ],
-   "file": "tts/g_376687df"
+   "file": "tts/g_1ecdf0b2"
   },
   {
    "v": "Joonghyun",
    "ids": [
     30
    ],
-   "file": "tts/g_6d579472"
-  },
-  {
-   "v": "Mija",
-   "ids": [
-    31,
-    32
-   ],
-   "file": "tts/g_624731ef"
-  },
-  {
-   "v": "Joonghyun",
-   "ids": [
-    33
-   ],
    "file": "tts/g_eb6ceefa"
   },
   {
-   "v": "Mija",
+   "v": "Kyungsook",
    "ids": [
-    34,
-    35,
+    31,
+    32,
+    33,
+    34
+   ],
+   "file": "tts/g_cd9f430c"
+  },
+  {
+   "v": "Kyungsook",
+   "ids": [
+    35
+   ],
+   "file": "tts/g_497f9ab3"
+  },
+  {
+   "v": "Kyungsook",
+   "ids": [
     36,
     37
    ],
-   "file": "tts/g_21d73637"
-  },
-  {
-   "v": "Mija",
-   "ids": [
-    38
-   ],
-   "file": "tts/g_093703a8"
-  },
-  {
-   "v": "Mija",
-   "ids": [
-    39,
-    40
-   ],
-   "file": "tts/g_f098d5b7"
+   "file": "tts/g_f1a87fac"
   }
  ],
  "cta": {
-  "voice": "Mija",
+  "voice": "Kyungsook",
   "text": "화면을 두 번 터치하면 이야기가 이어집니다.",
-  "file": "tts/cta_819fbfbb"
+  "file": "tts/cta_b83866f5"
  }
 }

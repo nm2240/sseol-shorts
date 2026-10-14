@@ -1,5 +1,6 @@
 # large-v3로 오독 확인(10-14) — check.py(medium)보다 정확, CPU라 묶음 하나에 수십 초
 #   python lv3_check.py epNN               렌더 전: tts 묶음 전부를 받아써 대본과 다른 곳만(숫자 표기 차이는 무시하고 보면 됨)
+#   python lv3_check.py epNN --only g_xxxx  다시 합성한 묶음만
 #   python lv3_check.py epNN --lines 0 21  렌더 뒤: 완성 나레이션(out/narr.wav)에서 그 줄만 다시 받아쓰기
 import difflib, json, os, re, sys
 import soundfile as sf
@@ -23,7 +24,9 @@ if "--lines" in sys.argv:
         print(i, "대본:", l["text"]); print("   large-v3:", " ".join(s.text.strip() for s in segs), flush=True)
 else:
     p = json.load(open(os.path.join(REPO, ep, "tts", "plan.json"), encoding="utf-8"))
+    only = sys.argv[sys.argv.index("--only") + 1:] if "--only" in sys.argv else None   # 다시 합성한 묶음만: --only g_a8571b10 ...
     for c in p["chunks"]:
+        if only and os.path.basename(c["file"]) not in only: continue
         txt = " ".join(p["lines"][i].get("say", p["lines"][i]["text"]) for i in c["ids"])
         segs, _ = m.transcribe(os.path.join(REPO, ep, c["file"] + ".wav"), language="ko", beam_size=5)
         got = " ".join(s.text.strip() for s in segs)

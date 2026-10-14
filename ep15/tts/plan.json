@@ -14,7 +14,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "그 말이 그렇게 서러울 수가 없었어요. 그런데 제가 완전히 잘못 알고 있었습니다."
+   "text": "그 말이 그렇게 서러울 수가 없었어요."
   },
   {
    "spk": "나레이터",
@@ -167,7 +167,7 @@
    "ids": [
     0
    ],
-   "file": "tts/g_cd7e2453"
+   "file": "tts/g_486dbb3e"
   },
   {
    "v": "Younggil",
@@ -185,7 +185,7 @@
     5,
     6
    ],
-   "file": "tts/g_14e31c91"
+   "file": "tts/g_19b220d0"
   },
   {
    "v": "Younggil",
@@ -211,7 +211,7 @@
     13,
     14
    ],
-   "file": "tts/g_54bc8211"
+   "file": "tts/g_4f5f442d"
   },
   {
    "v": "Changbae",
@@ -237,7 +237,7 @@
     27,
     28
    ],
-   "file": "tts/g_4b268f73"
+   "file": "tts/g_565cc693"
   },
   {
    "v": "Sooni",
@@ -262,7 +262,7 @@
     34,
     35
    ],
-   "file": "tts/g_2126d116"
+   "file": "tts/g_fa5feffc"
   },
   {
    "v": "Sooni",
@@ -284,12 +284,12 @@
     38,
     39
    ],
-   "file": "tts/g_35ed2678"
+   "file": "tts/g_c8f15ab3"
   }
  ],
  "cta": {
   "voice": "Sooni",
   "text": "화면을 두 번 터치하면 이야기가 이어집니다.",
-  "file": "tts/cta_6803862f"
+  "file": "tts/cta_d8ae347e"
  }
 }

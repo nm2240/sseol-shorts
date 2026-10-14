@@ -14,7 +14,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "그 말이 얼마나 야속하던지요. 그런데 제가 완전히 잘못 알고 있었습니다."
+   "text": "그 말이 얼마나 야속하던지요."
   },
   {
    "spk": "나레이터",
@@ -118,7 +118,7 @@
   },
   {
    "spk": "시동생",
-   "text": "\"이번에는 형님 밭 걱정 말고, 형수님 몸 걱정만 하세요.\""
+   "text": "\"이번에는 형님 농사 걱정 말고, 형수님 몸 걱정만 하세요.\""
   },
   {
    "spk": "나레이터",
@@ -159,7 +159,7 @@
    "ids": [
     0
    ],
-   "file": "tts/g_5b5dcc38"
+   "file": "tts/g_22a4f9c1"
   },
   {
    "v": "Kyungae",
@@ -183,7 +183,7 @@
     5,
     6
    ],
-   "file": "tts/g_b7b25134"
+   "file": "tts/g_a8a2920e"
   },
   {
    "v": "Kwonil",
@@ -198,7 +198,7 @@
     8,
     9
    ],
-   "file": "tts/g_418a52b0"
+   "file": "tts/g_b7504505"
   },
   {
    "v": "Kyungae",
@@ -220,7 +220,7 @@
     18,
     19
    ],
-   "file": "tts/g_7243c07c"
+   "file": "tts/g_e1d8b1a7"
   },
   {
    "v": "Kwonil",
@@ -237,7 +237,7 @@
     23,
     24
    ],
-   "file": "tts/g_abedd2a7"
+   "file": "tts/g_e1c8fc2b"
   },
   {
    "v": "Kwonil",
@@ -253,14 +253,14 @@
     27,
     28
    ],
-   "file": "tts/g_b12bd976"
+   "file": "tts/g_f98a1a96"
   },
   {
    "v": "Kwonil",
    "ids": [
     29
    ],
-   "file": "tts/g_746e7b83"
+   "file": "tts/g_7acf45ee"
   },
   {
    "v": "Kyungae",
@@ -269,7 +269,7 @@
     31,
     32
    ],
-   "file": "tts/g_2bbafbd7"
+   "file": "tts/g_152e3038"
   },
   {
    "v": "Kyungae",
@@ -286,12 +286,12 @@
     36,
     37
    ],
-   "file": "tts/g_bfd29db5"
+   "file": "tts/g_4290afef"
   }
  ],
  "cta": {
   "voice": "Kyungae",
   "text": "화면을 두 번 터치하면 이야기가 이어집니다.",
-  "file": "tts/cta_ce0c382d"
+  "file": "tts/cta_a062bab0"
  }
 }

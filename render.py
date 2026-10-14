@@ -183,7 +183,15 @@ def align_chunk(y, ids):
             if _a is not None: est = _a
             cands = [(abs((a + b) / 2 - est) - 0.15 * min(b - a, 1.0), j) for j, (a, b) in enumerate(inner)
                      if j not in used and (a + b) / 2 > start + 0.3]
-            if cands:
+            # 받아쓰기로 다음 줄 첫 낱말을 찾았는데 가까운 무음이 없으면(타입캐스트가 두 문장을 숨 없이 붙여 읽음) 먼 쉼표 쉼에 붙이지 않고
+            # 그 낱말 바로 앞 가장 조용한 20ms에서 자름 — 10-14 ep12 「남편은 마지막까지,」가 앞 줄 자막에 붙어 2초 늦게 바뀜
+            if _a is not None and (not cands or min(abs((inner[j][0] + inner[j][1]) / 2 - est) for _, j in cands) > 0.6):
+                f = int(0.02 * SR); lo = max(int((est - 0.3) * SR), int((start + 0.3) * SR)); hi = int((est + 0.2) * SR)
+                rms = [np.sqrt(np.mean(y[s:s + f] ** 2)) for s in range(lo, max(lo + f, hi - f), f // 2)]
+                end = nxt = (lo + int(np.argmin(rms)) * (f // 2) + f / 2) / SR
+                cands = None
+            if cands is None: pass
+            elif cands:
                 _, j = min(cands); used.add(j)
                 a, b = inner[j]; end = a; nxt = b
             else:

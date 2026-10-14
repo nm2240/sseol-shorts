@@ -14,7 +14,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "저는 그 말이 참 서운했어요. 그런데 제가 완전히 잘못 알고 있었습니다."
+   "text": "저는 그 말이 참 서운했어요."
   },
   {
    "spk": "나레이터",
@@ -22,7 +22,7 @@
   },
   {
    "spk": "나레이터",
-   "text": "열다섯 해 된 일 톤 트럭으로 장날마다 과일을 팔러 다니죠."
+   "text": "열다섯 해 된 낡은 트럭으로 장날마다 과일을 팔러 다니죠."
   },
   {
    "spk": "나레이터",
@@ -151,21 +151,21 @@
  ],
  "chunks": [
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     0
    ],
-   "file": "tts/g_88bff0b4"
+   "file": "tts/g_69857f2b"
   },
   {
-   "v": "Cheolhoon",
+   "v": "Seokpyo",
    "ids": [
     1
    ],
-   "file": "tts/g_04d93825"
+   "file": "tts/g_140e4edf"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     2,
     3,
@@ -173,17 +173,17 @@
     5,
     6
    ],
-   "file": "tts/g_53681b3b"
+   "file": "tts/g_a8571b10"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     7
    ],
-   "file": "tts/g_58f164b5"
+   "file": "tts/g_029a5acd"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     8,
     9,
@@ -191,7 +191,7 @@
     11,
     12
    ],
-   "file": "tts/g_4a7005b1"
+   "file": "tts/g_38ebfff0"
   },
   {
    "v": "Joonghyun",
@@ -201,7 +201,7 @@
    "file": "tts/g_1abee1af"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     14,
     15,
@@ -209,7 +209,7 @@
     17,
     18
    ],
-   "file": "tts/g_9d45ac7f"
+   "file": "tts/g_4b15376f"
   },
   {
    "v": "Joonghyun",
@@ -219,13 +219,13 @@
    "file": "tts/g_3aea7337"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     20,
     21,
     22
    ],
-   "file": "tts/g_616301fe"
+   "file": "tts/g_4ec302ac"
   },
   {
    "v": "Joonghyun",
@@ -236,57 +236,57 @@
    "file": "tts/g_a54bdc34"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     25,
     26,
     27,
     28
    ],
-   "file": "tts/g_df7b0ef8"
+   "file": "tts/g_e5b477b9"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     29
    ],
-   "file": "tts/g_742bf3e1"
+   "file": "tts/g_f5ddc970"
   },
   {
-   "v": "Cheolhoon",
+   "v": "Seokpyo",
    "ids": [
     30
    ],
-   "file": "tts/g_f94bba1e"
+   "file": "tts/g_165104d1"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     31,
     32,
     33
    ],
-   "file": "tts/g_da54498e"
+   "file": "tts/g_8516e1bf"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     34
    ],
-   "file": "tts/g_5e286ba4"
+   "file": "tts/g_e7327174"
   },
   {
-   "v": "Duckchun",
+   "v": "Changbae",
    "ids": [
     35,
     36
    ],
-   "file": "tts/g_a637263d"
+   "file": "tts/g_328a041f"
   }
  ],
  "cta": {
-  "voice": "Duckchun",
+  "voice": "Changbae",
   "text": "화면을 두 번 터치하면 이야기가 이어집니다.",
-  "file": "tts/cta_01286575"
+  "file": "tts/cta_bec20b75"
  }
 }
