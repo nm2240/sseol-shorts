@@ -141,15 +141,26 @@ def _line_words(y):
 
 def whisper_anchor(words, next_text, est, start):
     """다음 줄 첫 낱말과 같은 소리로 시작하는 받아쓰기 낱말 중 어림값에 가장 가까운 것의 시작."""
-    first = plain(next_text.split()[0])
-    for n in (2, 1):
-        key = first[:n]
-        hits = [t for t, w in words if w.startswith(key) and start + 0.3 < t and abs(t - est) < 3.0]
-        if hits: return min(hits, key=lambda t: abs(t - est)) - 0.2
-    # 한글 숫자로 시작하는 줄(이십 년·오백만 원)은 받아쓰기가 숫자로 적음(20년) — ep07 「이십 년 동안」을 못 찾아 앞 줄 중간에서 잘림
-    if re.match(r"^[일이삼사오육칠팔구]?[십백천만]|^[일이삼사오육칠팔구]+(년|원|시간|시|분|살|개월|달|명|번|평)", first):
+    toks = [plain(x) for x in next_text.split()]
+    first = toks[0]
+    # 한글 숫자로 시작하는 줄(이십 년·오백만 원·칠 년)은 받아쓰기가 숫자로 적음(20년·7년) — 숫자를 먼저 찾음
+    #   ep07 「이십 년 동안」을 못 찾아 앞 줄 중간에서 잘림 / 10-14 ep20 「칠 년 동안」의 「칠」을 앞 줄 「새로 칠이」에서 찾아 2초 일찍 자름
+    num = first + (toks[1] if len(first) == 1 and len(toks) > 1 else "")
+    if re.match(r"^[일이삼사오육칠팔구]?[십백천만]|^[일이삼사오육칠팔구]+(년|원|시간|시|분|살|개월|달|명|번|평)", num):
         hits = [t for t, w in words if w[:1].isdigit() and start + 0.3 < t and abs(t - est) < 3.0]
         if hits: return min(hits, key=lambda t: abs(t - est)) - 0.2
+    # 같은 글자로 시작하는 낱말이 여럿이면 뒤 낱말까지 더 길게 맞는 것을 먼저(앞 글자 한두 개만 맞는 우연을 피함)
+    want = "".join(toks)[:6]
+    def lcp(k):
+        got = plain("".join(w for _, w in words[k:k + 3])); n = 0
+        while n < min(len(got), len(want)) and got[n] == want[n]: n += 1
+        return n
+    for n in (2, 1):
+        key = first[:n]
+        hits = [k for k, (t, w) in enumerate(words) if w.startswith(key) and start + 0.3 < t and abs(t - est) < 3.0]
+        if hits:
+            best = max(lcp(k) for k in hits)
+            return min((words[k][0] for k in hits if lcp(k) == best), key=lambda t: abs(t - est)) - 0.2
     return None
 
 
@@ -221,8 +232,18 @@ if plan.get("cta"):
     CTA_VOICE = _cv[max(0, _on[0] - int(0.03 * SR)):_on[-1] + int(0.12 * SR)].copy()
     _f = int(0.02 * SR); CTA_VOICE[:_f] *= np.linspace(0, 1, _f); CTA_VOICE[-_f * 3:] *= np.linspace(1, 0, _f * 3)
     CTA_DUR = max(CTA_DUR, 0.15 + len(CTA_VOICE) / SR + 0.35)
+def speech_level(s):
+    """말소리 크기 — 20ms 창 가운데 이 줄 가장 큰 창에서 20dB 안쪽(-50dBFS 위)만 RMS. 쉼·여운은 빼고 잼."""
+    f = int(0.02 * SR)
+    if len(s) < f: return None
+    e = np.sqrt((s[:len(s) // f * f].reshape(-1, f) ** 2).mean(1) + 1e-12)
+    e = e[(e > e.max() * 0.1) & (e > 10 ** (-50 / 20))]
+    return float(np.sqrt((e ** 2).mean())) if len(e) else None
+
+
+LEVEL_CLAMP = (-6.0, 9.0)   # 줄마다 맞출 때 줄이고 키우는 한도(dB)
 # 끝음절 여운(-58dB까지)·첫 숨은 살린 채, 화자 바뀌는 곳 쉼이 짧아지면 그 조용한 부분끼리 겹쳐서(더해서) 붙임
-pieces, cta_start, next_speech = [], None, None
+pieces, piece_spk, cta_start, next_speech = [], [], None, None
 for c in chunks:
     y = compress_pauses(load(os.path.join(ROOT, c["file"] + ".wav")))
     spans, head, tail = align_chunk(y, c["ids"])
@@ -246,12 +267,24 @@ for c in chunks:
         seg[:fi] *= np.sin(np.linspace(0, np.pi / 2, fi)) ** 2; seg[-fo:] *= np.cos(np.linspace(0, np.pi / 2, fo)) ** 2
         lines[i]["a"], lines[i]["b"] = t + (a - a0), t + (b - a0)
         lines[i]["words"] = [(t + ws_, plain(w_)) for ws_, w_ in line_words(seg)]   # 줄 단위 받아쓰기(시각 정확)
-        pieces.append((t, seg))
+        pieces.append((t, seg)); piece_spk.append(lines[i].get("spk", ""))
         next_speech = lines[i]["b"] + LINE_GAP
         next_min = lines[i]["b"] + MIN_GAP
         if CTA_KEY and lines[i]["text"].strip() == CTA_KEY:
             cta_start = lines[i]["b"] + 0.1 + CTA_DUR
-            if CTA_VOICE is not None: pieces.append((lines[i]["b"] + 0.1 + 0.15, CTA_VOICE))
+            if CTA_VOICE is not None: pieces.append((lines[i]["b"] + 0.1 + 0.15, CTA_VOICE)); piece_spk.append(None)
+# 줄마다 크기를 나레이션에 맞춤(10-14 사용자 "나래이션에 맞춰서 음량 체크하고 수정해" · "화자별로 다를때도 있어")
+#   ep11~20 대사 줄이 나레이션보다 3~7dB 작았음(스마트 이모션 대사·목소리마다 크기가 다름). 기준 = 나레이터 줄 크기 중간값
+_lv = [speech_level(g_) if sp_ is not None else None for (s_, g_), sp_ in zip(pieces, piece_spk)]
+_nar = [v for v, sp_ in zip(_lv, piece_spk) if v and sp_ == "나레이터"] or [v for v in _lv if v]
+LEVEL_REF = float(np.median(_nar))
+_adj = {}
+for j, ((s_, g_), v) in enumerate(zip(pieces, _lv)):
+    if not v: continue
+    _db = float(np.clip(20 * np.log10(LEVEL_REF / v), *LEVEL_CLAMP))
+    pieces[j] = (s_, g_ * 10 ** (_db / 20))
+    _adj.setdefault(piece_spk[j], []).append(_db)
+print("줄 크기 맞춤(나레이션 기준):", "  ".join(f"{k} {np.median(d):+.1f}dB({min(d):+.1f}~{max(d):+.1f})" for k, d in _adj.items()))
 if CTA_VOICE is not None:   # 안내 목소리 크기를 본 나레이션에 맞춤(ep04: 5dB 작았음) — 봉우리는 나레이션 최대를 넘지 않게
     _act = lambda s: float(np.sqrt((s[np.abs(s) > 0.01] ** 2).mean()))
     _k = next(j for j, (s_, g_) in enumerate(pieces) if g_ is CTA_VOICE)
@@ -268,10 +301,23 @@ if raw_len + 0.6 < MIN_LEN: print(f"경고: {raw_len:.1f}초 — 2분 30초보�
 print(f"나레이션 {raw_len:.1f}초 → 속도 {speed:.3f}")
 sf.write(os.path.join(OUT, "narr_raw.wav"), narr, SR)
 af = f"atempo={speed:.4f}," if speed > 1.001 else ""
-_m = subprocess.run(["ffmpeg", "-hide_banner", "-i", os.path.join(OUT, "narr_raw.wav"), "-af",
-                    f"{af}loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"],
-                   capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
-_m = json.loads(_m[_m.rindex("{"):_m.rindex("}") + 1])
+
+
+def ln_measure(af_):
+    m = subprocess.run(["ffmpeg", "-hide_banner", "-i", os.path.join(OUT, "narr_raw.wav"), "-af",
+                        f"{af_}loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace").stderr
+    return json.loads(m[m.rindex("{"):m.rindex("}") + 1])
+
+
+_m = ln_measure(af)
+# 크게 키운 대사 줄 봉우리 때문에 loudnorm 이 linear 를 못 하고 dynamic(줄마다 출렁임)으로 바뀌지 않게 — 봉우리만 미리 누름
+_g = -16 - float(_m["input_i"])
+if float(_m["input_tp"]) + _g > -1.5:
+    _lim = max(0.0625, 10 ** ((-2.0 - _g) / 20))
+    af += f"alimiter=limit={_lim:.4f}:attack=5:release=50:level=0:latency=1,"
+    print(f"봉우리 누름 {float(_m['input_tp']):.1f} → {20 * np.log10(_lim):.1f}dBFS")
+    _m = ln_measure(af)
 _ln = (f"loudnorm=I=-16:TP=-1.5:LRA=11:measured_I={_m['input_i']}:measured_TP={_m['input_tp']}:"
        f"measured_LRA={_m['input_lra']}:measured_thresh={_m['input_thresh']}:offset={_m['target_offset']}:linear=true")
 run(["ffmpeg", "-v", "error", "-y", "-i", os.path.join(OUT, "narr_raw.wav"),   # 일정한 크기로(실시간 조절은 줄마다 크기가 출렁임)
@@ -524,10 +570,10 @@ for r_ in title_rows:
             else: cur = cand
     if cur: _fit.append(cur)
 title_rows = _fit
-TITLE_PITCH, TITLE_CY, SUB_Y = 204, 950, 930
+TITLE_PITCH, TITLE_CY, SUB_Y = 184, 950, 930   # 줄 간격 204 → 184(10-14 사용자 "인트로 제목 텍스트 줄사이 좀 줄여줘" — 외곽선 사이 34px → 14px)
 TITLE_FS = 186
-if len(title_rows) > 8:   # 8줄(높이 1632px)을 넘으면 글씨를 줄여 화면 안에
-    TITLE_FS = int(186 * 8 / len(title_rows)); TITLE_PITCH = int(204 * 8 / len(title_rows))
+if len(title_rows) > 8:   # 8줄을 넘으면 글씨를 줄여 화면 안에
+    TITLE_FS = int(186 * 8 / len(title_rows)); TITLE_PITCH = int(184 * 8 / len(title_rows))
     print(f"제목 {len(title_rows)}줄 → 글씨 {TITLE_FS}")
 for r_ in title_rows:
     if _TF.getlength(" ".join(w for w, _ in r_)) * TITLE_FS / 186 > 1000: print("경고: 낱말 하나가 화면보다 넓음", r_)

@@ -45,6 +45,21 @@ for i in range(len(L) - 1):
     dead = np.where(f < 10 ** (-75 / 20))[0]
     if len(dead) and dead[0] >= w: ends.append((20 * np.log10(f[dead[0] - w] + 1e-9), i))
 print(f"줄 끝(소리 사라지기 직전 10ms) 최대 {max(ends)[0]:.0f}dBFS, 줄 {max(ends)[1]}")
+# 줄 크기: 나레이션 중간값과 2dB 넘게 다르면 ⚠(10-14 사용자 "나래이션에 맞춰서 음량 체크하고 수정해" — 대사 줄이 3~7dB 작았음)
+def _lvl(s):
+    f = int(sr * 0.02)
+    if len(s) < f: return None
+    e = np.sqrt((s[:len(s) // f * f].reshape(-1, f) ** 2).mean(1) + 1e-12)
+    e = e[(e > e.max() * 0.1) & (e > 10 ** (-50 / 20))]
+    return 20 * np.log10(np.sqrt((e ** 2).mean())) if len(e) else None
+lv = [(_lvl(y[int(l["a"] * sr):int(l["b"] * sr)]), l.get("spk", ""), i) for i, l in enumerate(L)]
+lv = [x for x in lv if x[0] is not None]
+ref = float(np.median([d for d, s_, _ in lv if s_ == "나레이터"] or [d for d, _, _ in lv]))
+by = {}
+for d, s_, _ in lv: by.setdefault(s_, []).append(d - ref)
+loud = [(i, s_, round(d - ref, 1)) for d, s_, i in lv if abs(d - ref) > 2.0]
+print("줄 크기(나레이션 기준) " + "  ".join(f"{k} {np.median(v):+.1f}dB" for k, v in by.items())
+      + (f", ⚠ 2dB 넘게 다른 줄 {loud}" if loud else ", 2dB 넘게 다른 줄 없음"))
 ev = re.findall(r"Dialogue: 1,([^,]+),([^,]+),Sub,,0,0,0,,\{[^}]*\}(.*)", ass)
 # 자막 한 화면 1~3줄(10-13) — 화면이 1.2초 안에 바뀌면 어지러움
 short = [(round(ts(a), 2), round(ts(b) - ts(a), 2), t) for a, b, t in ev if ts(b) - ts(a) < 1.2]
