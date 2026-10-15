@@ -147,7 +147,10 @@ def whisper_anchor(words, next_text, est, start):
     #   ep07 「이십 년 동안」을 못 찾아 앞 줄 중간에서 잘림 / 10-14 ep20 「칠 년 동안」의 「칠」을 앞 줄 「새로 칠이」에서 찾아 2초 일찍 자름
     num = first + (toks[1] if len(first) == 1 and len(toks) > 1 else "")
     if re.match(r"^[일이삼사오육칠팔구]?[십백천만]|^[일이삼사오육칠팔구]+(년|원|시간|시|분|살|개월|달|명|번|평)", num):
-        hits = [t for t, w in words if w[:1].isdigit() and start + 0.3 < t and abs(t - est) < 3.0]
+        hits = [(t, w) for t, w in words if w[:1].isdigit() and start + 0.3 < t and abs(t - est) < 3.0]
+        # 첫 숫자까지 맞는 것만(「삼 년」=3…) — 10-15 ep21 「삼 년 전」을 바로 뒤 「9살」(아홉 살)에서 찾아 자막이 한 줄 밀림
+        fd = dict(zip("일이삼사오육칠팔구", "123456789")).get(num[0], "1")
+        hits = [t for t, w in hits if w[0] == fd] or [t for t, w in hits]
         if hits: return min(hits, key=lambda t: abs(t - est)) - 0.2
     # 같은 글자로 시작하는 낱말이 여럿이면 뒤 낱말까지 더 길게 맞는 것을 먼저(앞 글자 한두 개만 맞는 우연을 피함)
     want = "".join(toks)[:6]
@@ -155,13 +158,18 @@ def whisper_anchor(words, next_text, est, start):
         got = plain("".join(w for _, w in words[k:k + 3])); n = 0
         while n < min(len(got), len(want)) and got[n] == want[n]: n += 1
         return n
+    global ANCHOR_WEAK
     for n in (2, 1):
         key = first[:n]
         hits = [k for k, (t, w) in enumerate(words) if w.startswith(key) and start + 0.3 < t and abs(t - est) < 3.0]
         if hits:
             best = max(lcp(k) for k in hits)
+            ANCHOR_WEAK = best < 2   # 첫 글자 하나만 맞음 — 우연일 수 있음(align_chunk가 앞 줄 끝 낱말로 다시 찾음)
             return min((words[k][0] for k in hits if lcp(k) == best), key=lambda t: abs(t - est)) - 0.2
     return None
+
+
+ANCHOR_WEAK = False
 
 
 def anchor_by_last(words, cur_text, est, start):
@@ -190,8 +198,14 @@ def align_chunk(y, ids):
             end = tail
         else:
             est = head + (tail - head) * acc / tot
+            global ANCHOR_WEAK
+            ANCHOR_WEAK = False
             _a = whisper_anchor(words, lines[ids[k + 1]]["text"], est, start)
-            if _a is None: _a = anchor_by_last(words, lines[i]["text"], est, start)
+            # 다음 줄 첫 낱말을 못 찾았거나 첫 글자 하나만 맞았으면 이 줄 끝 낱말로 찾음
+            #   10-15 ep21 「아비 없이」를 「압이」로 받아써서 「아」로 「아끼려고」에 붙음 → 「끊을 거 아니냐」가 다음 줄 자막으로 넘어감
+            if _a is None or ANCHOR_WEAK:
+                _b = anchor_by_last(words, lines[i]["text"], est, start)
+                if _b is not None: _a = _b
             if _a is not None: est = _a
             cands = [(abs((a + b) / 2 - est) - 0.15 * min(b - a, 1.0), j) for j, (a, b) in enumerate(inner)
                      if j not in used and (a + b) / 2 > start + 0.3]
@@ -241,7 +255,7 @@ def speech_level(s):
     return float(np.sqrt((e ** 2).mean())) if len(e) else None
 
 
-LEVEL_CLAMP = (-6.0, 9.0)   # 줄마다 맞출 때 줄이고 키우는 한도(dB)
+LEVEL_CLAMP = (-6.0, 12.0)   # 줄마다 맞출 때 줄이고 키우는 한도(dB) — 10-15 ep21 아이 목소리(하준)가 +9에 막혀 3dB 작았음 → +12
 # 끝음절 여운(-58dB까지)·첫 숨은 살린 채, 화자 바뀌는 곳 쉼이 짧아지면 그 조용한 부분끼리 겹쳐서(더해서) 붙임
 pieces, piece_spk, cta_start, next_speech = [], [], None, None
 for c in chunks:
@@ -295,6 +309,17 @@ if CTA_VOICE is not None:   # 안내 목소리 크기를 본 나레이션에 맞
 narr = np.zeros(int((max(s + len(g) / SR for s, g in pieces)) * SR) + 1, "float32")
 for s, g in pieces:
     narr[int(s * SR):int(s * SR) + len(g)] += g
+# 쉼 속 짧은 딸깍 소리(입술·숨 틱) 지움 — 앞뒤 40ms가 조용한 곳의 튀는 2ms만(말 첫 자음은 뒤에 모음이 있어 안 건드림)
+#   10-15 ep21 「퇴원하던 날, | 저는」 쉼에 -40dB 틱(check.py 틱 1개)
+_fr = int(SR * 0.002); _n = len(narr) // _fr
+_pk = np.abs(np.diff(narr[:_n * _fr], prepend=narr[:1])).reshape(_n, _fr).max(1)
+_rms = np.sqrt((narr[:_n * _fr] ** 2).reshape(_n, _fr).mean(1))
+_ctx = np.convolve(_rms, np.ones(40) / 40, "same")
+_tk = np.where((_pk > 0.012) & (_ctx < 0.004))[0]
+for _k in _tk:
+    _a = max(0, _k * _fr - int(0.006 * SR)); _b = min(len(narr), (_k + 1) * _fr + int(0.006 * SR))
+    narr[_a:_b] *= 1 - np.hanning(_b - _a)
+if len(_tk): print(f"쉼 속 틱 {len(_tk)}개 지움", [round(_k * 0.002, 2) for _k in _tk[:8]])
 raw_len = len(narr) / SR
 speed = max(1.0, raw_len / (MAX_LEN - 0.6))
 if raw_len + 0.6 < MIN_LEN: print(f"경고: {raw_len:.1f}초 — 2분 30초보다 짧음, 대본을 늘릴 것")

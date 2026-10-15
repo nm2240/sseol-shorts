@@ -7,10 +7,14 @@
 #       (10-13~14는 05:20부터 3시간 32분 간격 하루 5칸이었음 — 05:20은 업로더 심야 금지에 걸려 늦게 나갔음)
 #   같은 이름 .txt(제목·설명·해시태그)가 없는 영상은 걸지 않는다(사용자 확인 뒤 txt와 함께 넣는 규칙).
 #   python upload_schedule.py          무엇을 언제 걸지 보기만
-#   python upload_schedule.py --go     실제로 예약(쇼츠업로더 run.py --go --pick … --at …)
+#   python upload_schedule.py --go     실제로 예약 — 10-15부터 발사대기 없이 **지금 유튜브에 올리고 공개 시각 예약**
+#       (사용자 "이제 내가 예약 걸으라고 하면 발사대기 하지말고 유튜브에 예약 걸면돼"): 쇼츠업로더 upload.py --manifest(publish_at=칸, time_by=user) --승인
+#       → 비공개 업로드 → 검토(약 30분) 뒤 review.py가 비공개+publishAt → 그 시각에 공개. 성공하면 업로더 folders.mark_done 으로 업로드 된 영상에.
+#       쓴 칸은 upload_schedule.log 「유튜브예약」·「칸 사용」 줄로 기억.
+#   python upload_schedule.py --go --until 2026-10-16   그날 칸까지만 걸기
 #   python upload_schedule.py --slots 3   앞으로 3일 칸만 보기
 #   python upload_schedule.py --go --max 4   앞에서 4편만 걸기
-import datetime as dt, json, os, subprocess, sys
+import datetime as dt, json, os, re, subprocess, sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent
@@ -90,6 +94,11 @@ def main():
     mine = [q for q in queue if Path(q.get("file", "")).parent == NEW]
     queued = {Path(q["file"]).name for q in mine}
     taken = {q.get("쏠때", "")[:16].replace("T", " ") for q in mine}
+    if LOG.exists():   # 유튜브에 바로 예약한 칸·다른 식으로 쓴 칸(「칸 사용」)
+        for ln in LOG.read_text(encoding="utf-8").splitlines():
+            m = re.search(r"(유튜브예약|칸 사용) (\d{4}-\d\d-\d\d \d\d:\d\d)", ln)
+            if m: taken.add(m.group(2))
+    until = dt.date.fromisoformat(sys.argv[sys.argv.index("--until") + 1]) if "--until" in sys.argv else None
 
     vids = sorted(p for p in NEW.glob("*.mp4") if p.name not in queued)
     for v in vids:
@@ -111,7 +120,11 @@ def main():
     plan = []
     slots = (s for s in future_slots(dt.datetime.now()) if f"{s:%Y-%m-%d %H:%M}" not in taken)
     for v in vids:
-        plan.append((v.name, f"{next(slots):%Y-%m-%d %H:%M}"))
+        at = next(slots)
+        if until and at.date() > until: break
+        plan.append((v.name, f"{at:%Y-%m-%d %H:%M}"))
+    if not plan:
+        print("걸 칸 없음"); return
     for name, at in plan:
         print(f"  {at}  {name}")
     if not go:
@@ -119,20 +132,27 @@ def main():
         return
 
     py = UP / ".venv" / "Scripts" / "python.exe"
-    cmd = [str(py), "run.py", "--go", "--pick", *[n for n, _ in plan],
-           "--at", *[f"{n}={a}" for n, a in plan]]
     env = dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8")
-    r = subprocess.run(cmd, cwd=UP, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
-    after = json.loads(QUEUE.read_text(encoding="utf-8")) if QUEUE.exists() else []
-    got = {Path(q["file"]).name: q.get("쏠때", "") for q in after if Path(q.get("file", "")).parent == NEW}
+    ch = json.loads((NEW / ".채널정보.json").read_text(encoding="utf-8"))["channel_id"]   # 야담쟁이(10-14 다시 연결)
+    bad = 0
     for name, at in plan:
-        if name in got:
-            log(f"예약 {got[name][:16]}  {name}")
+        man = UP / "기록" / "_썰쇼츠_예약.json"
+        man.write_text(json.dumps([{"channel": ch, "file": str(NEW / name), "title": "", "desc": "", "tags": [],
+                                    "publish_at": at, "time_by": "user", "allow_not_short": False}],
+                                  ensure_ascii=False), encoding="utf-8")
+        r = subprocess.run([str(py), "upload.py", "--manifest", str(man), "--승인"], cwd=UP, env=env,
+                           capture_output=True, text=True, encoding="utf-8", errors="replace")
+        m = re.search(r"https://youtu\.be/[\w-]+", r.stdout)
+        if m and "성공 1건" in r.stdout:
+            log(f"유튜브예약 {at} {name} {m.group(0)}")
+            d = subprocess.run([str(py), "-c", "import folders, sys; folders.mark_done(sys.argv[1])", str(NEW / name)],
+                               cwd=UP, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
+            if d.returncode: log(f"  파일 정리 실패(새영상에 남음 — 다시 걸리지 않게 손으로 옮길 것) {d.stderr.strip()[-120:]}")
         else:
-            log(f"실패 {name}")
-    if any(n not in got for n, _ in plan):
-        log("run.py 출력 끝:\n" + "\n".join((r.stdout + r.stderr).strip().splitlines()[-15:]))
-        sys.exit(1)
+            bad += 1
+            log(f"실패 {name}\n" + "\n".join((r.stdout + r.stderr).strip().splitlines()[-8:]))
+            break   # 한도·인증 문제면 뒤 편도 똑같이 실패 — 멈추고 알림
+    if bad: sys.exit(1)
 
 
 if __name__ == "__main__":

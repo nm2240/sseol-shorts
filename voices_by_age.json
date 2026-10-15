@@ -231,7 +231,7 @@
    "ko": "서연",
    "name": "Seoyeon",
    "voice_id": "tc_637cbfeef7f00f21e8a1c6c8",
-   "note": "",
+   "note": "⚠ 10-15 ep21 긴 나레이션 묶음에서 문장을 두 번 읽음(다시 합성할수록 늘어남) — 피함",
    "api_gender": "female",
    "api_age": "young_adult"
   },
