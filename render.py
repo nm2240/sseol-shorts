@@ -316,28 +316,6 @@ if CTA_VOICE is not None:   # 안내 목소리 크기를 본 나레이션에 맞
     _gain = min(np.median([_act(g_) for g_ in _rest]) / _act(CTA_VOICE), max(np.abs(g_).max() for g_ in _rest) / np.abs(CTA_VOICE).max())
     pieces[_k] = (pieces[_k][0], CTA_VOICE * _gain)
     print(f"노란 문구 목소리 {20 * np.log10(_gain):+.1f}dB")
-narr = np.zeros(int((max(s + len(g) / SR for s, g in pieces)) * SR) + 1, "float32")
-for s, g in pieces:
-    narr[int(s * SR):int(s * SR) + len(g)] += g
-# 쉼 속 짧은 딸깍 소리(입술·숨 틱) 지움 — 앞뒤 40ms가 조용한 곳의 튀는 2ms만(말 첫 자음은 뒤에 모음이 있어 안 건드림)
-#   10-15 ep21 「퇴원하던 날, | 저는」 쉼에 -40dB 틱(check.py 틱 1개)
-_fr = int(SR * 0.002); _n = len(narr) // _fr
-_pk = np.abs(np.diff(narr[:_n * _fr], prepend=narr[:1])).reshape(_n, _fr).max(1)
-_rms = np.sqrt((narr[:_n * _fr] ** 2).reshape(_n, _fr).mean(1))
-_ctx = np.convolve(_rms, np.ones(40) / 40, "same")
-_tk = np.where((_pk > 0.012) & (_ctx < 0.004))[0]
-for _k in _tk:
-    _a = max(0, _k * _fr - int(0.006 * SR)); _b = min(len(narr), (_k + 1) * _fr + int(0.006 * SR))
-    narr[_a:_b] *= 1 - np.hanning(_b - _a)
-if len(_tk): print(f"쉼 속 틱 {len(_tk)}개 지움", [round(_k * 0.002, 2) for _k in _tk[:8]])
-raw_len = len(narr) / SR
-speed = max(1.0, raw_len / (MAX_LEN - 0.6))
-if raw_len + 0.6 < MIN_LEN: print(f"경고: {raw_len:.1f}초 — 2분 30초보다 짧음, 대본을 늘릴 것")
-print(f"나레이션 {raw_len:.1f}초 → 속도 {speed:.3f}")
-sf.write(os.path.join(OUT, "narr_raw.wav"), narr, SR)
-af = f"atempo={speed:.4f}," if speed > 1.001 else ""
-
-
 def ln_measure(af_):
     m = subprocess.run(["ffmpeg", "-hide_banner", "-i", os.path.join(OUT, "narr_raw.wav"), "-af",
                         f"{af_}loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"],
@@ -345,18 +323,51 @@ def ln_measure(af_):
     return json.loads(m[m.rindex("{"):m.rindex("}") + 1])
 
 
-_m = ln_measure(af)
-# 크게 키운 대사 줄 봉우리 때문에 loudnorm 이 linear 를 못 하고 dynamic(줄마다 출렁임)으로 바뀌지 않게 — 봉우리만 미리 누름
-_g = -16 - float(_m["input_i"])
-if float(_m["input_tp"]) + _g > -1.5:
-    _lim = max(0.0625, 10 ** ((-2.0 - _g) / 20))
-    af += f"alimiter=limit={_lim:.4f}:attack=5:release=50:level=0:latency=1,"
-    print(f"봉우리 누름 {float(_m['input_tp']):.1f} → {20 * np.log10(_lim):.1f}dBFS")
+# 봉우리 누름(리미터)은 소리치는 대사처럼 봉우리가 큰 줄을 더 많이 깎음 — 10-17 ep35 아버지(학철) 호통 줄이 맞춘 뒤에도 -3.1dB
+#   → 완성 narr.wav에서 줄 크기를 다시 재서, 나레이션과 1dB 넘게 다른 줄만 고쳐 다시 섞음(최대 3번)
+for _pass in range(3):
+    narr = np.zeros(int((max(s + len(g) / SR for s, g in pieces)) * SR) + 1, "float32")
+    for s, g in pieces:
+        narr[int(s * SR):int(s * SR) + len(g)] += g
+    # 쉼 속 짧은 딸깍 소리(입술·숨 틱) 지움 — 앞뒤 40ms가 조용한 곳의 튀는 2ms만(말 첫 자음은 뒤에 모음이 있어 안 건드림)
+    #   10-15 ep21 「퇴원하던 날, | 저는」 쉼에 -40dB 틱(check.py 틱 1개)
+    _fr = int(SR * 0.002); _n = len(narr) // _fr
+    _pk = np.abs(np.diff(narr[:_n * _fr], prepend=narr[:1])).reshape(_n, _fr).max(1)
+    _rms = np.sqrt((narr[:_n * _fr] ** 2).reshape(_n, _fr).mean(1))
+    _ctx = np.convolve(_rms, np.ones(40) / 40, "same")
+    _tk = np.where((_pk > 0.012) & (_ctx < 0.004))[0]
+    for _k in _tk:
+        _a = max(0, _k * _fr - int(0.006 * SR)); _b = min(len(narr), (_k + 1) * _fr + int(0.006 * SR))
+        narr[_a:_b] *= 1 - np.hanning(_b - _a)
+    raw_len = len(narr) / SR
+    speed = max(1.0, raw_len / (MAX_LEN - 0.6))
+    if _pass == 0:
+        if len(_tk): print(f"쉼 속 틱 {len(_tk)}개 지움", [round(_k * 0.002, 2) for _k in _tk[:8]])
+        if raw_len + 0.6 < MIN_LEN: print(f"경고: {raw_len:.1f}초 — 2분 30초보다 짧음, 대본을 늘릴 것")
+        print(f"나레이션 {raw_len:.1f}초 → 속도 {speed:.3f}")
+    sf.write(os.path.join(OUT, "narr_raw.wav"), narr, SR)
+    af = f"atempo={speed:.4f}," if speed > 1.001 else ""
     _m = ln_measure(af)
-_ln = (f"loudnorm=I=-16:TP=-1.5:LRA=11:measured_I={_m['input_i']}:measured_TP={_m['input_tp']}:"
-       f"measured_LRA={_m['input_lra']}:measured_thresh={_m['input_thresh']}:offset={_m['target_offset']}:linear=true")
-run(["ffmpeg", "-v", "error", "-y", "-i", os.path.join(OUT, "narr_raw.wav"),   # 일정한 크기로(실시간 조절은 줄마다 크기가 출렁임)
-     "-af", f"{af}{_ln}", "-ar", str(SR), os.path.join(OUT, "narr.wav")])
+    # 크게 키운 대사 줄 봉우리 때문에 loudnorm 이 linear 를 못 하고 dynamic(줄마다 출렁임)으로 바뀌지 않게 — 봉우리만 미리 누름
+    _g = -16 - float(_m["input_i"])
+    if float(_m["input_tp"]) + _g > -1.5:
+        _lim = max(0.0625, 10 ** ((-2.0 - _g) / 20))
+        af += f"alimiter=limit={_lim:.4f}:attack=5:release=50:level=0:latency=1,"
+        print(f"봉우리 누름 {float(_m['input_tp']):.1f} → {20 * np.log10(_lim):.1f}dBFS")
+        _m = ln_measure(af)
+    _ln = (f"loudnorm=I=-16:TP=-1.5:LRA=11:measured_I={_m['input_i']}:measured_TP={_m['input_tp']}:"
+           f"measured_LRA={_m['input_lra']}:measured_thresh={_m['input_thresh']}:offset={_m['target_offset']}:linear=true")
+    run(["ffmpeg", "-v", "error", "-y", "-i", os.path.join(OUT, "narr_raw.wav"),   # 일정한 크기로(실시간 조절은 줄마다 크기가 출렁임)
+         "-af", f"{af}{_ln}", "-ar", str(SR), os.path.join(OUT, "narr.wav")])
+    _y, _ = sf.read(os.path.join(OUT, "narr.wav")); _y = _y if _y.ndim == 1 else _y.mean(1)
+    _lv2 = [(speech_level(_y[int(s / speed * SR):int((s + len(g) / SR) / speed * SR)]), j)
+            for j, (s, g) in enumerate(pieces) if piece_spk[j] is not None]
+    _ref2 = np.median([v for v, j in _lv2 if v and piece_spk[j] == "나레이터"] or [v for v, _ in _lv2 if v])
+    _fix = {j: float(np.clip(20 * np.log10(_ref2 / v), -6, 6)) for v, j in _lv2 if v and abs(20 * np.log10(_ref2 / v)) > 1.0}
+    if not _fix or _pass == 2: break
+    print(f"리미터 뒤 줄 크기 다시 맞춤({_pass + 1}): " + "  ".join(f"{j}{piece_spk[j]} {d:+.1f}" for j, d in list(_fix.items())[:8]))
+    for j, d in _fix.items():
+        pieces[j] = (pieces[j][0], pieces[j][1] * 10 ** (d / 20))
 lines = [l for l in lines if not l.get("skip")]
 for l in lines:
     l["a"] /= speed; l["b"] /= speed
