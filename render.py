@@ -197,7 +197,7 @@ def align_chunk(y, ids):
         if k == len(ids) - 1:
             end = tail
         else:
-            est = head + (tail - head) * acc / tot
+            est = est0 = head + (tail - head) * acc / tot
             global ANCHOR_WEAK
             ANCHOR_WEAK = False
             _a = whisper_anchor(words, lines[ids[k + 1]]["text"], est, start)
@@ -212,6 +212,16 @@ def align_chunk(y, ids):
             # 받아쓰기로 다음 줄 첫 낱말을 찾았는데 가까운 무음이 없으면(타입캐스트가 두 문장을 숨 없이 붙여 읽음) 먼 쉼표 쉼에 붙이지 않고
             # 그 낱말 바로 앞 가장 조용한 20ms에서 자름 — 10-14 ep12 「남편은 마지막까지,」가 앞 줄 자막에 붙어 2초 늦게 바뀜
             if _a is not None and (not cands or min(abs((inner[j][0] + inner[j][1]) / 2 - est) for _, j in cands) > 0.6):
+                # 무음 없이 말 사이를 자를 때는 낱말 시각이 정확해야 함 — small은 0.3초쯤 일찍 적어(「이번에는」 3.34초, 실제 3.66초)
+                # 10-16 ep28 「기다려 주지 않|잖아요」 가운데(「잖」 앞 막힘소리)를 자르고 「잖아요」가 다음 줄 앞에 띄어 붙음(사용자 "끊긴 곳이 있어")
+                # → 이때만 medium(줄 받아쓰기와 같은 모델·저장)으로 다시 찾음
+                wm = [(t, plain(w)) for t, w in line_words(y) if plain(w)]
+                ANCHOR_WEAK = False
+                _m = whisper_anchor(wm, lines[ids[k + 1]]["text"], est0, start)
+                if _m is None or ANCHOR_WEAK:
+                    _m2 = anchor_by_last(wm, lines[i]["text"], est0, start)
+                    if _m2 is not None: _m = _m2
+                if _m is not None: est = _m
                 f = int(0.02 * SR); lo = max(int((est - 0.3) * SR), int((start + 0.3) * SR)); hi = int((est + 0.2) * SR)
                 rms = [np.sqrt(np.mean(y[s:s + f] ** 2)) for s in range(lo, max(lo + f, hi - f), f // 2)]
                 end = nxt = (lo + int(np.argmin(rms)) * (f // 2) + f / 2) / SR

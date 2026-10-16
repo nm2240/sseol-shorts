@@ -21,6 +21,19 @@ rate = [(len(norm(l["text"])) / max(l["b"] - l["a"], 0.1), i) for i, l in enumer
 med = float(np.median([r for r, _ in rate]))
 odd = [(i, round(r, 1)) for r, i in rate if r > med * 1.45 or r < med * 0.65]
 print(f"줄 말 속도 중간값 초당 {med:.1f}자" + (f", ⚠ 튀는 줄 {odd} — 줄 경계가 어긋났는지 받아쓰기로 확인" if odd else ", 튀는 줄 없음"))
+# 줄 끝 잘림: 끝 몇 글자가 다음 줄로 넘어가 끊겨 들림 — 10-16 ep28 「기다려 주지 않|잖아요」(대사라 위 속도 검사에서 빠짐, 사용자 "끊긴 곳이 있어")
+#   ① 받아쓰기 끝 낱말이 대본 끝 낱말의 앞부분에서 끝남(않 ← 않잖아요) ② 같은 화자 바로 다음 줄보다 1.45배 넘게 빠른데 끝 낱말이 다름
+spd = [len(norm(l["text"])) / max(l["b"] - l["a"], 0.1) for l in L]
+cut = []
+for i, l in enumerate(L):
+    ws = [norm(w) for _, w in l.get("words", []) if norm(w)]
+    last = norm(l["text"].split()[-1]) if l["text"].split() else ""
+    if not ws or not last: continue
+    if len(ws[-1]) <= len(last) - 2 and last.startswith(ws[-1]): cut.append(i)
+    elif i + 1 < len(L) and L[i + 1]["spk"] == l["spk"] and L[i + 1]["a"] - l["b"] < 0.6 and spd[i] > spd[i + 1] * 1.45 and ws[-1] != last: cut.append(i)
+    # ③ 반대로 다음 줄 첫 낱말이 이 줄 끝에 붙음(ep28 첫 고침에서 「…않잖아요 이번에는」)
+    elif i + 1 < len(L) and ws[-1] != last and len(ws[-1]) >= 2 and L[i + 1]["text"].split() and norm(L[i + 1]["text"].split()[0]).startswith(ws[-1]): cut.append(i)
+print(f"⚠ 줄 경계가 어긋났을 수 있음 {cut} — 끝 글자가 다음 줄로 넘어갔거나 다음 줄 첫말이 붙었는지 lv3_check.py --lines 로 확인" if cut else "줄 끝 잘림 없음")
 ass = open(os.path.join(OUT, "subs.ass"), encoding="utf-8-sig").read()
 ts = lambda s: (lambda h, m, x: int(h) * 3600 + int(m) * 60 + float(x))(*s.split(":"))
 cta = re.search(r"Dialogue: 3,([^,]+),([^,]+),Cta", ass); ca, cb = ts(cta.group(1)), ts(cta.group(2))
