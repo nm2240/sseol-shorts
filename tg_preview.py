@@ -6,6 +6,8 @@ import glob, json, os, subprocess, sys
 REPO = os.path.dirname(os.path.abspath(__file__))
 ep = sys.argv[1]
 src = sorted(glob.glob(os.path.join(REPO, "썰쇼츠 최종본", ep + "_*.mp4")))
+if not src:   # 10-16 사용자가 "모두 새영상에 넣어" — 이미 새영상으로 옮긴 편을 다시 렌더한 경우
+    src = sorted(glob.glob(os.path.join(REPO, "썰쇼츠 최종본", "새영상", ep + "_*.mp4")))
 if not src:
     sys.exit(f"{ep} 완성본이 썰쇼츠 최종본에 없습니다")
 src = src[-1]
