@@ -1,5 +1,6 @@
-# 대본 수치 점검: python script_stats.py ep07 ep08 …  — 글자 수(1,200~1,380)·대사 비율(약 25%)·나레이션 말끝(~습니다 60·~어요 25·~죠 15%, 같은 말끝 3번까지)·노란 문구 위치(약 52%)·최장 문장(60자 이하)
+# 대본 수치 점검: python script_stats.py ep07 ep08 …  — 글자 수(1,200~1,380)·대사 비율(약 25%)·나레이션 말끝(~습니다 60·~어요 25·~죠 15%, 같은 말끝 3번까지)·노란 문구 위치(약 52%)·최장 문장(60자 이하)·반전 물건 겹침(10-18)
 import re, collections, sys
+sys.stdout.reconfigure(encoding="utf-8")   # ⚠ 를 cp949 콘솔에서 찍다 죽지 않게
 for ep in sys.argv[1:]:
     S = open(f"{ep}/script.txt", encoding="utf-8").read().split("\n■ 대본\n")[1].splitlines()
     L = [l for l in S if l.startswith("[")]
@@ -24,3 +25,18 @@ for ep in sys.argv[1:]:
         F = ImageFont.truetype("fonts/DoHyeon-Regular.ttf", 186)
         wide = [(w, int(F.getlength(w))) for w in (re.sub(r"\([^)]*\)", "", r).strip() for r in tl[0][4:].split("/")) if F.getlength(w) > 1000]
         print("    제목줄", f"⚠ 1000px 넘는 줄 {wide} — 나눠 적을 것" if wide else "폭 괜찮음")
+    # 반전 물건 겹침(10-18 사용자 「수첩을 너무 많이 써먹어. 좀 줄여」 — ep12·25·35·38이 수첩, ep05·23 공책, ep11 장부)
+    #   손으로 쓴 기록장(수첩·공책·장부·일기장·가계부)은 앞 10편에 한 번이라도 있으면 ⚠, 다른 물건은 앞 3편과 같으면 ⚠
+    FAM = {"기록장(수첩·공책·장부)": ("수첩", "공책", "장부", "일기장", "가계부"), "봉투": ("봉투",), "통장": ("통장",),
+           "영수증": ("영수증",), "편지·쪽지": ("편지", "쪽지", "메모")}
+    def used(e):
+        try: B = open(f"{e}/script.txt", encoding="utf-8").read().split("\n■ 대본\n")[1]
+        except (FileNotFoundError, IndexError): return set()
+        return {k for k, ws in FAM.items() if sum(B.count(w) for w in ws) >= 2}
+    num = int(re.sub(r"\D", "", ep))
+    msg = []
+    for k in sorted(used(ep)):
+        back = 10 if k.startswith("기록장") else 3
+        dup = [f"ep{i:02d}" for i in range(num - back, num) if k in used(f"ep{i:02d}")]
+        msg.append(f"{k} ⚠ 앞 {back}편 {'·'.join(dup)}에도 씀 — 다른 물건으로" if dup else f"{k} 괜찮음")
+    print("    반전 물건", " / ".join(msg) if msg else "기록장·봉투·통장·영수증·편지 안 씀")
