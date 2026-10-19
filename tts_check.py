@@ -29,22 +29,25 @@ def f0_median(x, fmin=70, fmax=450):   # 반전 유머/tools/f0.py 와 같은 �
     return float(np.median(out)) if out else 0.0
 
 
-ep = sys.argv[1]
-plan = json.load(open(os.path.join(ep, "tts", "plan.json"), encoding="utf-8"))
-tot, per = 0.0, {}
-for c in plan["chunks"]:
-    x = load(os.path.join(ep, c["file"] + ".wav"))
-    tot += len(x) / SR
-    spk = plan["lines"][c["ids"][0]]["spk"]
-    per.setdefault((spk, c["v"]), []).append(x)
-n = len(plan["chunks"])
-est = tot + 0.45 * n + 3
-print(f"{ep} 예상 길이 약 {est:.0f}초({int(est // 60)}:{est % 60:04.1f}) — 음성 {tot:.1f} + 묶음 사이 {0.45 * n:.1f} + 노란 문구 3"
-      + ("  ⚠ 2:30~2:55 밖 — 대본 길이를 고칠 것" if not 150 <= est <= 175 else ""))
-hz = {k: f0_median(np.concatenate(v)) for k, v in per.items()}
-nar = [h for (s, _), h in hz.items() if s == "나레이터"]
-ref = nar[0] if nar else 0
-for (s, v), h in sorted(hz.items(), key=lambda kv: kv[0][0] != "나레이터"):
-    d = 12 * np.log2(h / ref) if ref and h else 0
-    warn = "  ⚠ 나레이터와 4반음 안 — 다른 목소리로" if s != "나레이터" and v not in [vv for (ss, vv) in hz if ss == "나레이터"] and abs(d) < 4 else ""
-    print(f"  {s:6s} {v:12s} {h:5.0f}Hz  나레이터와 {d:+.1f}반음{warn}")
+if __name__ == "__main__":   # voice_stats.py 가 load·f0_median 을 가져다 씀
+    ep = sys.argv[1]
+    plan = json.load(open(os.path.join(ep, "tts", "plan.json"), encoding="utf-8"))
+    tot, per, seen = 0.0, {}, set()
+    for c in plan["chunks"]:
+        x = load(os.path.join(ep, c["file"] + ".wav"))
+        if "pos" in c:   # 받아 둔 파일에서 몇 줄만 잘라 쓰는 조각(10-19 tts.py) — 길이는 그 줄 글자 비율만큼
+            ss = c["src_says"]; tot += len(x) / SR * sum(len(ss[p]) for p in c["pos"]) / max(1, sum(len(t) for t in ss))
+        else: tot += len(x) / SR
+        spk = plan["lines"][c["ids"][0]]["spk"]
+        if c["file"] not in seen: per.setdefault((spk, c["v"]), []).append(x); seen.add(c["file"])
+    n = len(plan["chunks"])
+    est = tot + 0.45 * n + 3
+    print(f"{ep} 예상 길이 약 {est:.0f}초({int(est // 60)}:{est % 60:04.1f}) — 음성 {tot:.1f} + 묶음 사이 {0.45 * n:.1f} + 노란 문구 3"
+          + ("  ⚠ 2:30~2:55 밖 — 대본 길이를 고칠 것" if not 150 <= est <= 175 else ""))
+    hz = {k: f0_median(np.concatenate(v)) for k, v in per.items()}
+    nar = [h for (s, _), h in hz.items() if s == "나레이터"]
+    ref = nar[0] if nar else 0
+    for (s, v), h in sorted(hz.items(), key=lambda kv: kv[0][0] != "나레이터"):
+        d = 12 * np.log2(h / ref) if ref and h else 0
+        warn = "  ⚠ 나레이터와 4반음 안 — 다른 목소리로" if s != "나레이터" and v not in [vv for (ss, vv) in hz if ss == "나레이터"] and abs(d) < 4 else ""
+        print(f"  {s:6s} {v:12s} {h:5.0f}Hz  나레이터와 {d:+.1f}반음{warn}")

@@ -1,0 +1,739 @@
+{
+ "Changbae": {
+  "dlg": {
+   "rate": 5.18,
+   "hz": 151,
+   "hz_min": 117,
+   "hz_max": 160,
+   "files": 8,
+   "eps": [
+    "ep25",
+    "ep26",
+    "ep34",
+    "ep38",
+    "ep43"
+   ]
+  },
+  "narr": {
+   "rate": 5.75,
+   "hz": 139,
+   "hz_min": 134,
+   "hz_max": 144,
+   "files": 8,
+   "eps": [
+    "ep06",
+    "ep11",
+    "ep38"
+   ]
+  }
+ },
+ "Dohan": {
+  "dlg": {
+   "rate": 6.55,
+   "hz": 173,
+   "hz_min": 166,
+   "hz_max": 181,
+   "files": 2,
+   "eps": [
+    "ep45"
+   ]
+  }
+ },
+ "Dupil": {
+  "dlg": {
+   "rate": 6.9,
+   "hz": 168,
+   "hz_min": 162,
+   "hz_max": 174,
+   "files": 2,
+   "eps": [
+    "ep03"
+   ]
+  }
+ },
+ "Gunn Kim": {
+  "dlg": {
+   "rate": 7.05,
+   "hz": 114,
+   "hz_min": 111,
+   "hz_max": 136,
+   "files": 5,
+   "eps": [
+    "ep32",
+    "ep44"
+   ]
+  }
+ },
+ "Hajun": {
+  "dlg": {
+   "rate": 5.2,
+   "hz": 333,
+   "hz_min": 333,
+   "hz_max": 333,
+   "files": 1,
+   "eps": [
+    "ep21"
+   ]
+  }
+ },
+ "Hakchul": {
+  "dlg": {
+   "rate": 5.85,
+   "hz": 234,
+   "hz_min": 219,
+   "hz_max": 267,
+   "files": 5,
+   "eps": [
+    "ep35"
+   ]
+  }
+ },
+ "Hanjun": {
+  "dlg": {
+   "rate": 6.59,
+   "hz": 120,
+   "hz_min": 101,
+   "hz_max": 162,
+   "files": 8,
+   "eps": [
+    "ep08",
+    "ep16",
+    "ep26",
+    "ep29",
+    "ep37"
+   ]
+  },
+  "narr": {
+   "rate": 7.4,
+   "hz": 128,
+   "hz_min": 121,
+   "hz_max": 131,
+   "files": 7,
+   "eps": [
+    "ep26"
+   ]
+  }
+ },
+ "Hayul": {
+  "dlg": {
+   "rate": 5.2,
+   "hz": 368,
+   "hz_min": 356,
+   "hz_max": 372,
+   "files": 3,
+   "eps": [
+    "ep08",
+    "ep38"
+   ]
+  }
+ },
+ "Hyejung": {
+  "dlg": {
+   "rate": 5.4,
+   "hz": 255,
+   "hz_min": 229,
+   "hz_max": 271,
+   "files": 8,
+   "eps": [
+    "ep06",
+    "ep16",
+    "ep18",
+    "ep23"
+   ]
+  }
+ },
+ "Hyewon": {
+  "dlg": {
+   "rate": 5.78,
+   "hz": 299,
+   "hz_min": 254,
+   "hz_max": 352,
+   "files": 8,
+   "eps": [
+    "ep22",
+    "ep27",
+    "ep40"
+   ]
+  }
+ },
+ "Hyunjun": {
+  "dlg": {
+   "rate": 6.3,
+   "hz": 140,
+   "hz_min": 113,
+   "hz_max": 174,
+   "files": 5,
+   "eps": [
+    "ep28"
+   ]
+  }
+ },
+ "Hyunkyung": {
+  "dlg": {
+   "rate": 5.74,
+   "hz": 232,
+   "hz_min": 216,
+   "hz_max": 302,
+   "files": 4,
+   "eps": [
+    "ep19",
+    "ep40"
+   ]
+  },
+  "narr": {
+   "rate": 5.71,
+   "hz": 204,
+   "hz_min": 190,
+   "hz_max": 218,
+   "files": 8,
+   "eps": [
+    "ep19",
+    "ep40"
+   ]
+  }
+ },
+ "Jaejun": {
+  "dlg": {
+   "rate": 6.9,
+   "hz": 187,
+   "hz_min": 140,
+   "hz_max": 232,
+   "files": 8,
+   "eps": [
+    "ep05",
+    "ep22",
+    "ep42"
+   ]
+  },
+  "narr": {
+   "rate": 7.57,
+   "hz": 145,
+   "hz_min": 130,
+   "hz_max": 159,
+   "files": 8,
+   "eps": [
+    "ep22"
+   ]
+  }
+ },
+ "Jain": {
+  "dlg": {
+   "rate": 5.48,
+   "hz": 239,
+   "hz_min": 219,
+   "hz_max": 276,
+   "files": 3,
+   "eps": [
+    "ep10"
+   ]
+  },
+  "narr": {
+   "rate": 6.11,
+   "hz": 225,
+   "hz_min": 211,
+   "hz_max": 235,
+   "files": 8,
+   "eps": [
+    "ep10"
+   ]
+  }
+ },
+ "Jihyun": {
+  "dlg": {
+   "rate": 6.49,
+   "hz": 238,
+   "hz_min": 229,
+   "hz_max": 271,
+   "files": 4,
+   "eps": [
+    "ep38",
+    "ep42"
+   ]
+  }
+ },
+ "Jinseo": {
+  "dlg": {
+   "rate": 5.97,
+   "hz": 264,
+   "hz_min": 254,
+   "hz_max": 320,
+   "files": 7,
+   "eps": [
+    "ep07",
+    "ep23",
+    "ep26"
+   ]
+  }
+ },
+ "Jiseon": {
+  "dlg": {
+   "rate": 4.57,
+   "hz": 194,
+   "hz_min": 176,
+   "hz_max": 211,
+   "files": 8,
+   "eps": [
+    "ep04",
+    "ep08",
+    "ep21",
+    "ep32",
+    "ep34"
+   ]
+  },
+  "narr": {
+   "rate": 5.47,
+   "hz": 199,
+   "hz_min": 186,
+   "hz_max": 204,
+   "files": 8,
+   "eps": [
+    "ep08",
+    "ep21",
+    "ep34"
+   ]
+  }
+ },
+ "Joonghyun": {
+  "dlg": {
+   "rate": 5.58,
+   "hz": 156,
+   "hz_min": 152,
+   "hz_max": 178,
+   "files": 8,
+   "eps": [
+    "ep07",
+    "ep11",
+    "ep14",
+    "ep17",
+    "ep39"
+   ]
+  },
+  "narr": {
+   "rate": 5.84,
+   "hz": 145,
+   "hz_min": 136,
+   "hz_max": 151,
+   "files": 8,
+   "eps": [
+    "ep07",
+    "ep17",
+    "ep39"
+   ]
+  }
+ },
+ "Juha": {
+  "dlg": {
+   "rate": 5.15,
+   "hz": 159,
+   "hz_min": 141,
+   "hz_max": 186,
+   "files": 8,
+   "eps": [
+    "ep25",
+    "ep27",
+    "ep31",
+    "ep36",
+    "ep41"
+   ]
+  },
+  "narr": {
+   "rate": 6.16,
+   "hz": 152,
+   "hz_min": 139,
+   "hz_max": 165,
+   "files": 8,
+   "eps": [
+    "ep04",
+    "ep05",
+    "ep16"
+   ]
+  }
+ },
+ "Jungsoon": {
+  "dlg": {
+   "rate": 4.19,
+   "hz": 177,
+   "hz_min": 154,
+   "hz_max": 188,
+   "files": 8,
+   "eps": [
+    "ep03",
+    "ep04",
+    "ep09",
+    "ep22"
+   ]
+  }
+ },
+ "Junwoo": {
+  "dlg": {
+   "rate": 4.23,
+   "hz": 427,
+   "hz_min": 427,
+   "hz_max": 427,
+   "files": 1,
+   "eps": [
+    "ep43"
+   ]
+  }
+ },
+ "Kwonil": {
+  "dlg": {
+   "rate": 4.75,
+   "hz": 127,
+   "hz_min": 110,
+   "hz_max": 144,
+   "files": 8,
+   "eps": [
+    "ep19",
+    "ep20",
+    "ep30",
+    "ep34",
+    "ep42"
+   ]
+  },
+  "narr": {
+   "rate": 5.87,
+   "hz": 121,
+   "hz_min": 113,
+   "hz_max": 125,
+   "files": 8,
+   "eps": [
+    "ep09",
+    "ep20",
+    "ep30",
+    "ep42"
+   ]
+  }
+ },
+ "Kyungae": {
+  "dlg": {
+   "rate": 4.6,
+   "hz": 266,
+   "hz_min": 218,
+   "hz_max": 302,
+   "files": 8,
+   "eps": [
+    "ep12",
+    "ep21",
+    "ep36",
+    "ep44"
+   ]
+  },
+  "narr": {
+   "rate": 5.24,
+   "hz": 240,
+   "hz_min": 222,
+   "hz_max": 281,
+   "files": 8,
+   "eps": [
+    "ep12",
+    "ep36",
+    "ep44"
+   ]
+  }
+ },
+ "Kyungsook": {
+  "dlg": {
+   "rate": 4.37,
+   "hz": 234,
+   "hz_min": 216,
+   "hz_max": 314,
+   "files": 7,
+   "eps": [
+    "ep14",
+    "ep31",
+    "ep43"
+   ]
+  },
+  "narr": {
+   "rate": 5.17,
+   "hz": 219,
+   "hz_min": 211,
+   "hz_max": 232,
+   "files": 8,
+   "eps": [
+    "ep14",
+    "ep31",
+    "ep43"
+   ]
+  }
+ },
+ "Mikyung": {
+  "dlg": {
+   "rate": 4.89,
+   "hz": 228,
+   "hz_min": 198,
+   "hz_max": 239,
+   "files": 8,
+   "eps": [
+    "ep03",
+    "ep17",
+    "ep25",
+    "ep29",
+    "ep37"
+   ]
+  },
+  "narr": {
+   "rate": 5.53,
+   "hz": 230,
+   "hz_min": 205,
+   "hz_max": 242,
+   "files": 8,
+   "eps": [
+    "ep03",
+    "ep25",
+    "ep29",
+    "ep37"
+   ]
+  }
+ },
+ "Miseon": {
+  "dlg": {
+   "rate": 4.64,
+   "hz": 272,
+   "hz_min": 250,
+   "hz_max": 308,
+   "files": 8,
+   "eps": [
+    "ep13",
+    "ep20",
+    "ep24",
+    "ep33",
+    "ep41"
+   ]
+  },
+  "narr": {
+   "rate": 5.69,
+   "hz": 227,
+   "hz_min": 213,
+   "hz_max": 239,
+   "files": 8,
+   "eps": [
+    "ep13",
+    "ep33",
+    "ep41"
+   ]
+  }
+ },
+ "Myungil": {
+  "dlg": {
+   "rate": 5.32,
+   "hz": 151,
+   "hz_min": 129,
+   "hz_max": 160,
+   "files": 8,
+   "eps": [
+    "ep13",
+    "ep24",
+    "ep33",
+    "ep40",
+    "ep45"
+   ]
+  },
+  "narr": {
+   "rate": 5.92,
+   "hz": 123,
+   "hz_min": 116,
+   "hz_max": 139,
+   "files": 8,
+   "eps": [
+    "ep24",
+    "ep45"
+   ]
+  }
+ },
+ "Piljae": {
+  "dlg": {
+   "rate": 4.86,
+   "hz": 124,
+   "hz_min": 124,
+   "hz_max": 125,
+   "files": 2,
+   "eps": [
+    "ep35"
+   ]
+  },
+  "narr": {
+   "rate": 5.92,
+   "hz": 122,
+   "hz_min": 113,
+   "hz_max": 124,
+   "files": 6,
+   "eps": [
+    "ep35"
+   ]
+  }
+ },
+ "Seokpyo": {
+  "dlg": {
+   "rate": 5.75,
+   "hz": 204,
+   "hz_min": 198,
+   "hz_max": 235,
+   "files": 8,
+   "eps": [
+    "ep09",
+    "ep11",
+    "ep17",
+    "ep24",
+    "ep45"
+   ]
+  }
+ },
+ "Sohye": {
+  "dlg": {
+   "rate": 6.34,
+   "hz": 291,
+   "hz_min": 252,
+   "hz_max": 320,
+   "files": 7,
+   "eps": [
+    "ep17",
+    "ep29"
+   ]
+  }
+ },
+ "Sookhee": {
+  "dlg": {
+   "rate": 4.82,
+   "hz": 356,
+   "hz_min": 333,
+   "hz_max": 390,
+   "files": 8,
+   "eps": [
+    "ep22",
+    "ep39",
+    "ep42"
+   ]
+  }
+ },
+ "Sooni": {
+  "dlg": {
+   "rate": 5.26,
+   "hz": 232,
+   "hz_min": 213,
+   "hz_max": 286,
+   "files": 8,
+   "eps": [
+    "ep15",
+    "ep21",
+    "ep28",
+    "ep30",
+    "ep39"
+   ]
+  },
+  "narr": {
+   "rate": 5.51,
+   "hz": 229,
+   "hz_min": 225,
+   "hz_max": 239,
+   "files": 8,
+   "eps": [
+    "ep15",
+    "ep28"
+   ]
+  }
+ },
+ "Soyoung": {
+  "dlg": {
+   "rate": 5.9,
+   "hz": 205,
+   "hz_min": 205,
+   "hz_max": 205,
+   "files": 1,
+   "eps": [
+    "ep05"
+   ]
+  }
+ },
+ "Yejin": {
+  "dlg": {
+   "rate": 7.21,
+   "hz": 229,
+   "hz_min": 227,
+   "hz_max": 286,
+   "files": 3,
+   "eps": [
+    "ep06"
+   ]
+  }
+ },
+ "Yeonhwa": {
+  "dlg": {
+   "rate": 5.26,
+   "hz": 203,
+   "hz_min": 174,
+   "hz_max": 254,
+   "files": 7,
+   "eps": [
+    "ep18",
+    "ep27",
+    "ep36"
+   ]
+  },
+  "narr": {
+   "rate": 5.59,
+   "hz": 179,
+   "hz_min": 163,
+   "hz_max": 190,
+   "files": 8,
+   "eps": [
+    "ep18",
+    "ep23",
+    "ep27"
+   ]
+  }
+ },
+ "Yeonja": {
+  "dlg": {
+   "rate": 5.48,
+   "hz": 320,
+   "hz_min": 302,
+   "hz_max": 333,
+   "files": 5,
+   "eps": [
+    "ep32",
+    "ep37"
+   ]
+  },
+  "narr": {
+   "rate": 6.1,
+   "hz": 291,
+   "hz_min": 291,
+   "hz_max": 296,
+   "files": 5,
+   "eps": [
+    "ep32"
+   ]
+  }
+ },
+ "Younggil": {
+  "dlg": {
+   "rate": 4.5,
+   "hz": 166,
+   "hz_min": 147,
+   "hz_max": 193,
+   "files": 8,
+   "eps": [
+    "ep08",
+    "ep15",
+    "ep20",
+    "ep30",
+    "ep41"
+   ]
+  }
+ },
+ "Younghee": {
+  "dlg": {
+   "rate": 4.44,
+   "hz": 308,
+   "hz_min": 286,
+   "hz_max": 356,
+   "files": 7,
+   "eps": [
+    "ep34",
+    "ep44"
+   ]
+  }
+ }
+}

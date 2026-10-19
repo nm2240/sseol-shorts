@@ -182,29 +182,29 @@ def anchor_by_last(words, cur_text, est, start):
     return None
 
 
-def align_chunk(y, ids):
-    """줄 경계 = 글자 비율 어림 → 받아쓰기로 다음 줄 첫 낱말 위치 → 가장 가까운 무음으로 붙임."""
+def align_chunk(y, texts):
+    """줄 경계 = 글자 비율 어림 → 받아쓰기로 다음 줄 첫 낱말 위치 → 가장 가까운 무음으로 붙임. texts = 이 파일에 든 줄 글자 차례대로."""
     sil = silences(y)
-    words = whisper_words(y) if len(ids) > 1 else []
+    words = whisper_words(y) if len(texts) > 1 else []
     head = sil[0][1] if sil and sil[0][0] == 0 else 0.0
     tail = sil[-1][0] if sil and sil[-1][1] >= len(y) / SR - 0.02 else len(y) / SR
     inner = [(a, b) for a, b in sil if a > head + 0.05 and b < tail - 0.05]
-    lens = [len(plain(lines[i]["text"])) for i in ids]
+    lens = [len(plain(t)) for t in texts]
     tot = sum(lens); spans = []; start = head; acc = 0
     used = set()
-    for k, i in enumerate(ids):
+    for k, txt in enumerate(texts):
         acc += lens[k]
-        if k == len(ids) - 1:
+        if k == len(texts) - 1:
             end = tail
         else:
             est = est0 = head + (tail - head) * acc / tot
             global ANCHOR_WEAK
             ANCHOR_WEAK = False
-            _a = whisper_anchor(words, lines[ids[k + 1]]["text"], est, start)
+            _a = whisper_anchor(words, texts[k + 1], est, start)
             # 다음 줄 첫 낱말을 못 찾았거나 첫 글자 하나만 맞았으면 이 줄 끝 낱말로 찾음
             #   10-15 ep21 「아비 없이」를 「압이」로 받아써서 「아」로 「아끼려고」에 붙음 → 「끊을 거 아니냐」가 다음 줄 자막으로 넘어감
             if _a is None or ANCHOR_WEAK:
-                _b = anchor_by_last(words, lines[i]["text"], est, start)
+                _b = anchor_by_last(words, txt, est, start)
                 if _b is not None: _a = _b
             if _a is not None: est = _a
             cands = [(abs((a + b) / 2 - est) - 0.15 * min(b - a, 1.0), j) for j, (a, b) in enumerate(inner)
@@ -217,9 +217,9 @@ def align_chunk(y, ids):
                 # → 이때만 medium(줄 받아쓰기와 같은 모델·저장)으로 다시 찾음
                 wm = [(t, plain(w)) for t, w in line_words(y) if plain(w)]
                 ANCHOR_WEAK = False
-                _m = whisper_anchor(wm, lines[ids[k + 1]]["text"], est0, start)
+                _m = whisper_anchor(wm, texts[k + 1], est0, start)
                 if _m is None or ANCHOR_WEAK:
-                    _m2 = anchor_by_last(wm, lines[i]["text"], est0, start)
+                    _m2 = anchor_by_last(wm, txt, est0, start)
                     if _m2 is not None: _m = _m2
                 if _m is not None: est = _m
                 f = int(0.02 * SR); lo = max(int((est - 0.3) * SR), int((start + 0.3) * SR)); hi = int((est + 0.2) * SR)
@@ -233,7 +233,7 @@ def align_chunk(y, ids):
             else:
                 end = nxt = est
         spans.append((start, end))
-        if k < len(ids) - 1: start = nxt
+        if k < len(texts) - 1: start = nxt
     return spans, head, tail
 
 
@@ -270,9 +270,13 @@ LEVEL_CLAMP = (-6.0, 12.0)   # 줄마다 맞출 때 줄이고 키우는 한도(d
 pieces, piece_spk, cta_start, next_speech = [], [], None, None
 for c in chunks:
     y = compress_pauses(load(os.path.join(ROOT, c["file"] + ".wav")))
-    spans, head, tail = align_chunk(y, c["ids"])
+    # 받아 둔 소리를 잘라 쓰는 조각(10-19 tts.py 비용 아끼기): 원래 파일 전체 줄 글자(src_texts)로 경계를 잡고 pos 번째 줄만 씀
+    pos = c.get("pos") or list(range(len(c["ids"])))
+    spans, head, tail = align_chunk(y, c.get("src_texts") or [lines[i]["text"] for i in c["ids"]])
     base = None   # 이 묶음 0초가 영상에서 몇 초인가 — 묶음 안 줄은 원래 간격 그대로 놓음
-    for k, ((a, b), i) in enumerate(zip(spans, c["ids"])):
+    for k, (a, b) in enumerate(spans):
+        if k not in pos: continue
+        i = c["ids"][pos.index(k)]
         if lines[i].get("skip"): continue
         # 끝음절 여운·첫 숨을 자르지 않음(10-12 "뚝뚝·틱틱 끊긴다") — 여러 문장 묶음이면 문장 사이 쉼 가운데까지만
         a0, b0 = soft_edges(y, a, b)
@@ -713,5 +717,6 @@ os.makedirs(FINAL_DIR, exist_ok=True)
 _t = next((l.split(":", 1)[1] for l in SCRIPT if l.startswith("제목:")), "")
 _t = re.sub(r'[\/:*?"<>|.…]', "", _t.split(",")[0]).strip()
 _dst = os.path.join(FINAL_DIR, f"{os.path.basename(ROOT)}_{_t}.mp4" if _t else os.path.basename(final))
-shutil.copy2(final, _dst)
-print("최종본", _dst)
+if os.path.dirname(ROOT) == REPO:   # 저장소 밖(스크래치 시험 폴더)에서 돌린 건 최종본에 넣지 않음
+    shutil.copy2(final, _dst)
+    print("최종본", _dst)

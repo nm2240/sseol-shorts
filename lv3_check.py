@@ -27,12 +27,14 @@ else:
     p = json.load(open(os.path.join(REPO, ep, "tts", "plan.json"), encoding="utf-8"))
     only = sys.argv[sys.argv.index("--only") + 1:] if "--only" in sys.argv else None   # 다시 합성한 묶음만: --only g_a8571b10 ...
     redo = "--redo" in sys.argv   # 반복 묶음을 tts/_반복/ 으로 옮김 → python tts.py epNN 이 그 묶음만 다시 합성
-    reps = []
+    reps, seen = [], set()
     for c in p["chunks"]:
         if only and os.path.basename(c["file"]) not in only: continue
+        if c["file"] in seen: continue   # 한 파일을 몇 조각으로 나눠 쓰면(10-19 tts.py 줄 단위 재사용) 한 번만
+        seen.add(c["file"])
         wav = os.path.join(REPO, ep, c["file"] + ".wav")
         dur = sf.info(wav).duration
-        txt = " ".join(p["lines"][i].get("say", p["lines"][i]["text"]) for i in c["ids"])
+        txt = " ".join(c["src_says"]) if "src_says" in c else " ".join(p["lines"][i].get("say", p["lines"][i]["text"]) for i in c["ids"])
         segs, _ = m.transcribe(wav, language="ko", beam_size=5, condition_on_previous_text=False)
         segs = [s for s in segs if s.start < dur - 0.3]   # 파일 끝 뒤에 같은 문장을 또 적는 착각(ep14) 빼기
         got = " ".join(s.text.strip() for s in segs)
