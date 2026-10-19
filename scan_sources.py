@@ -79,8 +79,11 @@ PROMPT = """너는 유튜브 쇼츠 각색 소재 분석가다. 아래는 시니
 
 def agy(prompt):
     for _ in range(2):
-        p = subprocess.run([AGY, "-p", prompt, "--model", "gemini-3.8-flash-high", "--print-timeout", "600s"],
-                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=900)
+        try:
+            p = subprocess.run([AGY, "-p", prompt, "--model", "gemini-3.8-flash-high", "--print-timeout", "600s"],
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=900)
+        except subprocess.TimeoutExpired:   # 10-20 열 편을 한 번에 보내니 15분 넘게 응답이 없어 멈춤 → 다섯 편씩 나눠 보냄(아래)
+            print("agy 응답 없음(15분), 재시도"); continue
         t = p.stdout
         if "Authentication required" in t + (p.stderr or ""): print("⚠ agy 로그인이 풀림 — 사용자에게 agy 재로그인 요청"); return None
         try: return json.loads(t[t.index("["):t.rindex("]") + 1])
@@ -129,7 +132,11 @@ def scan():
             if len(t) < 80: print("자막 없음, 건너뜀", v["id"], v["title"]); continue
             pick.append((mult, name, v)); body.append(f"### id={v['id']} | 채널 {name} | 조회수 {v['views']} | 제목: {v['title']}\n{t[:4000]}")
     if not pick: return
-    res = agy(PROMPT.format(n=len(pick), body="\n\n".join(body)))
+    res = []
+    for k in range(0, len(pick), 5):
+        r = agy(PROMPT.format(n=len(pick[k:k + 5]), body="\n\n".join(body[k:k + 5])))
+        if r: res += r
+        else: print("⚠ agy 분석 실패", [v["id"] for _, _, v in pick[k:k + 5]])
     if not res: print("⚠ agy 분석 실패 — 기존 후보로 진행"); return
     by = {x.get("id"): x for x in res if isinstance(x, dict)}
     pv = json.load(open(PV, encoding="utf-8"))
