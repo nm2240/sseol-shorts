@@ -70,7 +70,7 @@ def check(ep):
         if n > tot * 0.2: break   # 처음 약 30초(사용자가 말한 「앞 인트로」)
         intro.append(l); n += len(l)
     head = open(os.path.join(REPO, ep, "script.txt"), encoding="utf-8").read().split("■ 목소리")[0]
-    cider = "사이다" in head or "미러링" in head   # 사이다형은 숨은 반전이 아니라 한 방이라 결말 맞히기는 건너뜀
+    cider = ("사이다" in head or "미러링" in head) and "감동·오해형으로" not in head   # 사이다형은 숨은 반전이 아니라 한 방이라 결말 맞히기는 건너뜀(10-20 ep48 머리 「원본은 사위 시점 사이다 → 감동·오해형으로 바꿈」이 사이다로 잡혀 고침)
     r1 = {"guess": "(사이다형 — 결말 맞히기 안 함)", "confidence": "-"} if cider else agy(P1.format(title=title, intro="\n".join(intro))) or {}
     guess, conf = r1.get("guess", ""), r1.get("confidence", "?")
     r2 = agy(P2.format(title=title, body="\n".join(L), guess=guess, conf=conf)) or {}
