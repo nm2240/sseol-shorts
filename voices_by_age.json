@@ -426,15 +426,6 @@
   },
   {
    "age_group": "20대 남성",
-   "ko": "현준",
-   "name": "Hyunjun",
-   "voice_id": "tc_6a6194d59eea84806aea652c",
-   "note": "",
-   "api_gender": "male",
-   "api_age": "young_adult"
-  },
-  {
-   "age_group": "20대 남성",
    "ko": "세우",
    "name": "Sewoo",
    "voice_id": "tc_67d2346b8572120c4aa63e33",
@@ -658,6 +649,12 @@
    "name": "Myungil",
    "voice_id": "tc_62d66c2d1523be99355fda02",
    "why": "10-22 사용자 '명일 리스트에서 삭제' (ep45·ep50·ep55·ep57 나레이터 · 지난 편은 다시 만들지 않음)"
+  },
+  {
+   "ko": "현준",
+   "name": "Hyunjun",
+   "voice_id": "tc_6a6194d59eea84806aea652c",
+   "why": "10-22 사용자 '현준 삭제' (ep46·ep59 손자 · 지난 편은 다시 만들지 않음)"
   }
  ]
 }
