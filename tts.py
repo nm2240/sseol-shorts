@@ -18,7 +18,7 @@ VOICE_ID = {"Myungjoo": "tc_656059fc4db338e38f77d0bc", "Storyteller Jinsub": "tc
 for v in json.load(open(os.path.join(REPO, "voices_by_age.json"), encoding="utf-8"))["voices"]:
     VOICE_ID.setdefault(v["name"], v["voice_id"]); VOICE_ID.setdefault(v["ko"], v["voice_id"])
 
-BANNED = {"Inhwa", "인화", "Jaesun", "재선", "Ilho", "일호", "Byunghun", "병훈", "Duckchun", "덕춘", "Cheolhoon", "철훈", "Mija", "오미자", "Kyungae", "경애"}   # 10-12 "인화는 절대 쓰지 마", 10-13 "재선 앞으로 쓰지 마 삭제"·"일호 삭제"·"병훈 삭제", 10-14 "덕춘 삭제. 앞으로 사용금지"·"철훈 삭제 사용 금지"·"오미자 삭제. 금지", 10-22 "경애 리스트에서 삭제해" — 목소리표(voices_by_age.json "banned")에서도 뺌
+BANNED = {"Inhwa", "인화", "Jaesun", "재선", "Ilho", "일호", "Byunghun", "병훈", "Duckchun", "덕춘", "Cheolhoon", "철훈", "Mija", "오미자", "Kyungae", "경애", "Myungil", "명일"}   # 10-12 "인화는 절대 쓰지 마", 10-13 "재선 앞으로 쓰지 마 삭제"·"일호 삭제"·"병훈 삭제", 10-14 "덕춘 삭제. 앞으로 사용금지"·"철훈 삭제 사용 금지"·"오미자 삭제. 금지", 10-22 "경애 리스트에서 삭제해"·"명일 리스트에서 삭제" — 목소리표(voices_by_age.json "banned")에서도 뺌
 # 소리 표기 {자막|소리}: 자막·제목은 앞쪽(정석), 타입캐스트에는 뒤쪽(발음 나는 대로) — 10-13 사용자 "자막은 정석으로 하고 음성을 발음 나는 대로"
 PRON = re.compile(r"\{([^{}|]*)\|([^{}]*)\}")
 sub_text = lambda t: PRON.sub(r"\1", t)
