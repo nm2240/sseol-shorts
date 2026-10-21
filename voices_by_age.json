@@ -353,15 +353,6 @@
    "api_age": "middle_age"
   },
   {
-   "age_group": "50~60대 여성",
-   "ko": "경애",
-   "name": "Kyungae",
-   "voice_id": "tc_6a867e7a0e6ddfd2f2dd17b6",
-   "note": "",
-   "api_gender": "female",
-   "api_age": "elder"
-  },
-  {
    "age_group": "70대 여성",
    "ko": "주하",
    "name": "Juha",
@@ -664,6 +655,12 @@
    "name": "Mija",
    "voice_id": "tc_6059db64e2d12a32cce1b0c7",
    "why": "10-14 사용자 '오미자 삭제. 금지' (ep14 나레이터 → 경숙으로 교체)"
+  },
+  {
+   "ko": "경애",
+   "name": "Kyungae",
+   "voice_id": "tc_6a867e7a0e6ddfd2f2dd17b6",
+   "why": "10-22 사용자 '경애 리스트에서 삭제해' (ep44 나레이터 · 지난 편은 다시 만들지 않음)"
   }
  ]
 }
