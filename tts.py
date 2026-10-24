@@ -130,6 +130,11 @@ for gi, g in enumerate(groups):
     redo = REDO & set(g)
     comp = LIB["groups"].get(name)   # 이 묶음을 전에 줄 단위로 맞춰 놓았으면 그대로
     if not redo and not FULL and comp and all(have(os.path.basename(c["file"])) for c in comp):
+        # 저장된 조각의 ids 는 그때 줄 번호 — 앞에서 줄을 빼거나 넣으면 밀리니 지금 묶음 줄 번호로 옮김(10-24 ep68 줄 하나 빼자 render.py IndexError)
+        _old = sorted({i for c in comp for i in c["ids"]})
+        if len(_old) == len(g) and _old != g:
+            _m = dict(zip(_old, g)); comp = [dict(c, ids=[_m[i] for i in c["ids"]]) for c in comp]
+            LIB["groups"][name] = comp
         chunks += comp; continue
     if not redo and have(name):
         LIB["files"].setdefault(name, {"v": v, "spk": lines[g[0]]["spk"], "calm": calm,
