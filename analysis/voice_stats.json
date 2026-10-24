@@ -1,31 +1,31 @@
 {
  "Changbae": {
   "dlg": {
-   "rate": 5.13,
+   "rate": 5.14,
    "hz": 151,
    "hz_min": 117,
    "hz_max": 160,
    "files": 8,
    "eps": [
-    "ep48",
     "ep51",
     "ep56",
     "ep60",
-    "ep63"
+    "ep63",
+    "ep66"
    ]
   },
   "narr": {
-   "rate": 5.74,
+   "rate": 5.71,
    "hz": 139,
    "hz_min": 134,
    "hz_max": 144,
    "files": 8,
    "eps": [
-    "ep38",
     "ep48",
     "ep51",
     "ep56",
-    "ep63"
+    "ep63",
+    "ep66"
    ]
   }
  },
@@ -55,26 +55,28 @@
  },
  "Gunn Kim": {
   "dlg": {
-   "rate": 7.05,
-   "hz": 114,
-   "hz_min": 111,
+   "rate": 6.9,
+   "hz": 113,
+   "hz_min": 105,
    "hz_max": 136,
-   "files": 5,
+   "files": 8,
    "eps": [
     "ep32",
-    "ep44"
+    "ep44",
+    "ep70"
    ]
   }
  },
  "Hajun": {
   "dlg": {
-   "rate": 5.2,
-   "hz": 333,
+   "rate": 5.12,
+   "hz": 340,
    "hz_min": 333,
-   "hz_max": 333,
-   "files": 1,
+   "hz_max": 348,
+   "files": 3,
    "eps": [
-    "ep21"
+    "ep21",
+    "ep68"
    ]
   }
  },
@@ -245,17 +247,17 @@
  },
  "Jinseo": {
   "dlg": {
-   "rate": 5.97,
+   "rate": 5.99,
    "hz": 265,
    "hz_min": 254,
    "hz_max": 320,
    "files": 8,
    "eps": [
-    "ep23",
     "ep26",
     "ep54",
     "ep56",
-    "ep62"
+    "ep62",
+    "ep69"
    ]
   }
  },
@@ -290,21 +292,21 @@
  },
  "Joonghyun": {
   "dlg": {
-   "rate": 5.59,
+   "rate": 5.5,
    "hz": 156,
    "hz_min": 152,
    "hz_max": 178,
    "files": 8,
    "eps": [
-    "ep11",
     "ep14",
     "ep17",
     "ep39",
-    "ep64"
+    "ep64",
+    "ep69"
    ]
   },
   "narr": {
-   "rate": 5.82,
+   "rate": 5.81,
    "hz": 145,
    "hz_min": 136,
    "hz_max": 151,
@@ -313,27 +315,28 @@
     "ep07",
     "ep17",
     "ep39",
-    "ep64"
+    "ep64",
+    "ep69"
    ]
   }
  },
  "Juha": {
   "dlg": {
-   "rate": 5.15,
+   "rate": 5.16,
    "hz": 159,
    "hz_min": 141,
    "hz_max": 186,
    "files": 8,
    "eps": [
-    "ep27",
-    "ep31",
     "ep36",
     "ep41",
-    "ep49"
+    "ep49",
+    "ep67",
+    "ep70"
    ]
   },
   "narr": {
-   "rate": 6.09,
+   "rate": 6.05,
    "hz": 152,
    "hz_min": 139,
    "hz_max": 165,
@@ -342,7 +345,8 @@
     "ep04",
     "ep05",
     "ep16",
-    "ep49"
+    "ep49",
+    "ep70"
    ]
   }
  },
@@ -376,17 +380,17 @@
  },
  "Kwonil": {
   "dlg": {
-   "rate": 4.61,
+   "rate": 4.62,
    "hz": 127,
    "hz_min": 110,
    "hz_max": 144,
    "files": 8,
    "eps": [
-    "ep47",
     "ep54",
     "ep58",
     "ep59",
-    "ep61"
+    "ep61",
+    "ep67"
    ]
   },
   "narr": {
@@ -435,31 +439,31 @@
  },
  "Mikyung": {
   "dlg": {
-   "rate": 4.99,
+   "rate": 4.94,
    "hz": 228,
    "hz_min": 198,
    "hz_max": 239,
    "files": 8,
    "eps": [
-    "ep17",
     "ep25",
     "ep29",
     "ep37",
-    "ep50"
+    "ep50",
+    "ep67"
    ]
   },
   "narr": {
-   "rate": 5.53,
+   "rate": 5.51,
    "hz": 230,
    "hz_min": 205,
    "hz_max": 242,
    "files": 8,
    "eps": [
-    "ep03",
     "ep25",
     "ep29",
     "ep37",
-    "ep60"
+    "ep60",
+    "ep67"
    ]
   }
  },
@@ -493,14 +497,16 @@
  },
  "Piljae": {
   "dlg": {
-   "rate": 4.97,
-   "hz": 118,
-   "hz_min": 116,
-   "hz_max": 125,
-   "files": 5,
+   "rate": 4.89,
+   "hz": 121,
+   "hz_min": 106,
+   "hz_max": 152,
+   "files": 8,
    "eps": [
     "ep35",
-    "ep62"
+    "ep62",
+    "ep68",
+    "ep71"
    ]
   },
   "narr": {
@@ -517,23 +523,23 @@
  },
  "Seokpyo": {
   "dlg": {
-   "rate": 5.84,
+   "rate": 5.9,
    "hz": 204,
    "hz_min": 198,
    "hz_max": 235,
    "files": 8,
    "eps": [
-    "ep51",
-    "ep54",
     "ep56",
     "ep62",
-    "ep64"
+    "ep64",
+    "ep66",
+    "ep69"
    ]
   }
  },
  "Sohye": {
   "dlg": {
-   "rate": 6.42,
+   "rate": 6.46,
    "hz": 286,
    "hz_min": 252,
    "hz_max": 320,
@@ -542,7 +548,8 @@
     "ep17",
     "ep29",
     "ep49",
-    "ep64"
+    "ep64",
+    "ep71"
    ]
   }
  },
@@ -570,15 +577,15 @@
    "hz_max": 286,
    "files": 8,
    "eps": [
-    "ep30",
     "ep39",
     "ep46",
     "ep59",
-    "ep65"
+    "ep65",
+    "ep68"
    ]
   },
   "narr": {
-   "rate": 5.47,
+   "rate": 5.48,
    "hz": 229,
    "hz_min": 225,
    "hz_max": 239,
@@ -587,7 +594,8 @@
     "ep15",
     "ep28",
     "ep46",
-    "ep59"
+    "ep59",
+    "ep68"
    ]
   }
  },
@@ -618,21 +626,21 @@
  },
  "Yeonhwa": {
   "dlg": {
-   "rate": 5.28,
+   "rate": 5.19,
    "hz": 203,
    "hz_min": 174,
    "hz_max": 254,
    "files": 8,
    "eps": [
-    "ep18",
     "ep27",
     "ep36",
     "ep47",
-    "ep63"
+    "ep63",
+    "ep71"
    ]
   },
   "narr": {
-   "rate": 5.6,
+   "rate": 5.63,
    "hz": 179,
    "hz_min": 163,
    "hz_max": 190,
@@ -641,7 +649,8 @@
     "ep18",
     "ep23",
     "ep27",
-    "ep47"
+    "ep47",
+    "ep71"
    ]
   }
  },
