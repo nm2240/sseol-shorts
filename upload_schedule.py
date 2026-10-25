@@ -14,6 +14,7 @@
 #   python upload_schedule.py --go --until 2026-10-16   그날 칸까지만 걸기
 #   python upload_schedule.py --slots 3   앞으로 3일 칸만 보기
 #   python upload_schedule.py --go --max 4   앞에서 4편만 걸기
+#   python upload_schedule.py --ch 달달콩콩 --go --max 5   달달콩콩 채널 칸에 걸기(10-25)
 import datetime as dt, json, os, re, subprocess, sys
 from pathlib import Path
 
@@ -31,8 +32,24 @@ STEP = 7                     # 날마다 7분씩
 CYCLE = 12                   # 12일마다 다시 07:26부터
 LEAD = dt.timedelta(minutes=20)   # 심사확인(10분 주기)이 집어 가도록 최소 20분 앞
 
+# 10-25 사용자 "그럼 오늘부터 달달콩콩에 5편씩 올려" → --ch 달달콩콩: 같은 새영상에서 달달콩콩 채널로 하루 5칸.
+#   야담쟁이 칸과 안 겹치게 따로(2026-10-25가 1일째, 날마다 7분씩·12일 주기), 첫날만 오후에 다섯 칸.
+#   로그 줄은 「달달콩콩예약」·「달달콩콩 칸 사용」 — 야담쟁이 칸 계산과 섞이지 않게.
+CHANNELS = {
+    "달달콩콩": {"id": "UC8GeQuJwGEIgGaQVc-wyGhQ", "base": dt.date(2026, 10, 25),
+                 "times": [9 * 60 + 18, 12 * 60 + 7, 15 * 60 + 23, 18 * 60 + 12, 20 * 60 + 58],
+                 "special": {dt.date(2026, 10, 25): [13 * 60 + 41, 15 * 60 + 49, 17 * 60 + 58, 20 * 60 + 6, 22 * 60 + 14]}},
+}
+CH = sys.argv[sys.argv.index("--ch") + 1] if "--ch" in sys.argv else None
+if CH:
+    BASE_DAY, TIMES = CHANNELS[CH]["base"], CHANNELS[CH]["times"]
+TAG = f"{CH}예약" if CH else "유튜브예약"
+USED = f"{CH} 칸 사용" if CH else "칸 사용"
+
 
 def day_slots(day: dt.date) -> list:
+    if CH and day in CHANNELS[CH]["special"]:
+        return [dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=t) for t in CHANNELS[CH]["special"][day]]
     d = (day - BASE_DAY).days % CYCLE
     return [dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=t + STEP * d) for t in TIMES]
 
@@ -98,8 +115,8 @@ def main():
     taken = {q.get("쏠때", "")[:16].replace("T", " ") for q in mine}
     if LOG.exists():   # 유튜브에 바로 예약한 칸·다른 식으로 쓴 칸(「칸 사용」)
         for ln in LOG.read_text(encoding="utf-8").splitlines():
-            m = re.search(r"(유튜브예약|칸 사용) (\d{4}-\d\d-\d\d \d\d:\d\d)", ln)
-            if m: taken.add(m.group(2))
+            m = re.search(r"  (\S+예약|.*칸 사용) (\d{4}-\d\d-\d\d \d\d:\d\d)", ln)
+            if m and m.group(1) in (TAG, USED): taken.add(m.group(2))
     until = dt.date.fromisoformat(sys.argv[sys.argv.index("--until") + 1]) if "--until" in sys.argv else None
 
     vids = sorted(p for p in NEW.glob("*.mp4") if p.name not in queued)
@@ -135,7 +152,7 @@ def main():
 
     py = UP / ".venv" / "Scripts" / "python.exe"
     env = dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8")
-    ch = json.loads((NEW / ".채널정보.json").read_text(encoding="utf-8"))["channel_id"]   # 야담쟁이(10-14 다시 연결)
+    ch = CHANNELS[CH]["id"] if CH else json.loads((NEW / ".채널정보.json").read_text(encoding="utf-8"))["channel_id"]   # 야담쟁이(10-14 다시 연결)
     bad = 0
     for name, at in plan:
         man = UP / "기록" / "_썰쇼츠_예약.json"
@@ -146,7 +163,7 @@ def main():
                            capture_output=True, text=True, encoding="utf-8", errors="replace")
         m = re.search(r"https://youtu\.be/[\w-]+", r.stdout)
         if m and "성공 1건" in r.stdout:
-            log(f"유튜브예약 {at} {name} {m.group(0)}")
+            log(f"{TAG} {at} {name} {m.group(0)}")
             d = subprocess.run([str(py), "-c", "import folders, sys; folders.mark_done(sys.argv[1])", str(NEW / name)],
                                cwd=UP, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
             if d.returncode: log(f"  파일 정리 실패(새영상에 남음 — 다시 걸리지 않게 손으로 옮길 것) {d.stderr.strip()[-120:]}")
