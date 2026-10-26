@@ -15,11 +15,13 @@
 #   python upload_schedule.py --slots 3   앞으로 3일 칸만 보기
 #   python upload_schedule.py --go --max 4   앞에서 4편만 걸기
 #   python upload_schedule.py --ch 달달콩콩 --go --max 5   달달콩콩 채널 칸에 걸기(10-25)
-import datetime as dt, json, os, re, subprocess, sys
+import datetime as dt, json, os, re, shutil, subprocess, sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent
-NEW = REPO / "썰쇼츠 최종본" / "새영상"
+# 10-26 사용자 「이제 g드라이브에 있어」·「업로드한 영상 따로 만들어」·「새영상 파일도 만들어서 분류하고 업로드한 후에는
+#   업로드한영상으로 옮기는거 잊지말고」 → 완성본은 G:\내 드라이브\썰쇼츠, 채널마다 <채널>\새영상 · <채널>\업로드 된 영상.
+FINALS = Path(r"G:\내 드라이브\썰쇼츠")
 UP = Path(os.environ["USERPROFILE"]) / "Documents" / "쇼츠업로더"
 QUEUE = UP / "발사대기.json"
 LOG = REPO / "upload_schedule.log"
@@ -45,6 +47,8 @@ if CH:
     BASE_DAY, TIMES = CHANNELS[CH]["base"], CHANNELS[CH]["times"]
 TAG = f"{CH}예약" if CH else "유튜브예약"
 USED = f"{CH} 칸 사용" if CH else "칸 사용"
+NEW = FINALS / (CH or "야담쟁이") / "새영상"
+DONE = FINALS / (CH or "야담쟁이") / "업로드 된 영상"
 
 
 def day_slots(day: dt.date) -> list:
@@ -164,9 +168,12 @@ def main():
         m = re.search(r"https://youtu\.be/[\w-]+", r.stdout)
         if m and "성공 1건" in r.stdout:
             log(f"{TAG} {at} {name} {m.group(0)}")
-            d = subprocess.run([str(py), "-c", "import folders, sys; folders.mark_done(sys.argv[1])", str(NEW / name)],
-                               cwd=UP, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
-            if d.returncode: log(f"  파일 정리 실패(새영상에 남음 — 다시 걸리지 않게 손으로 옮길 것) {d.stderr.strip()[-120:]}")
+            try:   # 올라간 영상+txt → 그 채널 업로드 된 영상(10-26)
+                DONE.mkdir(parents=True, exist_ok=True)
+                for f in (NEW / name, (NEW / name).with_suffix(".txt")):
+                    if f.exists(): shutil.move(str(f), str(DONE / f.name))
+            except OSError as e:
+                log(f"  파일 정리 실패(새영상에 남음 — 다시 걸리지 않게 손으로 옮길 것) {e}")
         else:
             bad += 1
             log(f"실패 {name}\n" + "\n".join((r.stdout + r.stderr).strip().splitlines()[-8:]))

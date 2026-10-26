@@ -711,8 +711,17 @@ run(["ffmpeg", "-v", "error", "-y", "-i", os.path.join(OUT, "narr.wav"), "-c:a",
 print("완성", final, f"{DUR:.1f}초")
 
 # 완성본을 썰쇼츠\썰쇼츠 최종본 에도 넣음(10-13 사용자) — 파일 이름은 epNN_제목 첫 구절
-import shutil
-FINAL_DIR = os.path.join(REPO, "썰쇼츠 최종본")
+import glob, shutil
+# 10-26 사용자 「이제 g드라이브에 있어」·「새영상 파일도 만들어서 분류하고」 → G:\내 드라이브\썰쇼츠\<채널>\새영상 에 바로 넣음.
+#   짝수 편 달달콩콩, 홀수 편 야담쟁이. 이미 올라간 편(그 채널 업로드 된 영상에 같은 epNN)을 다시 렌더하면
+#   새영상에 넣지 않고 썰쇼츠 바로 아래에 둠(같은 편이 두 번 올라가지 않게).
+_G = r"G:\내 드라이브\썰쇼츠"
+if os.path.isdir(_G):
+    _ch = os.path.join(_G, "달달콩콩" if int(re.sub(r"\D", "", os.path.basename(ROOT)) or 1) % 2 == 0 else "야담쟁이")
+    _up = glob.glob(os.path.join(_ch, "업로드 된 영상", os.path.basename(ROOT) + "_*.mp4"))
+    FINAL_DIR = _G if _up else os.path.join(_ch, "새영상")
+else:
+    FINAL_DIR = os.path.join(REPO, "썰쇼츠 최종본")
 os.makedirs(FINAL_DIR, exist_ok=True)
 _t = next((l.split(":", 1)[1] for l in SCRIPT if l.startswith("제목:")), "")
 _t = re.sub(r'[\/:*?"<>|.…]', "", _t.split(",")[0]).strip()
