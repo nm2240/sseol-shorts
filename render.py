@@ -717,7 +717,9 @@ import glob, shutil
 #   새영상에 넣지 않고 썰쇼츠 바로 아래에 둠(같은 편이 두 번 올라가지 않게).
 _G = r"G:\내 드라이브\썰쇼츠"
 if os.path.isdir(_G):
-    _ch = os.path.join(_G, "달달콩콩" if int(re.sub(r"\D", "", os.path.basename(ROOT)) or 1) % 2 == 0 else "야담쟁이")
+    # 10-26 사용자 「김로또 하루 3개」 → 홀수 편을 반씩: ep%4==1 야담쟁이, ep%4==3 김로또(하루 12편 = 달달콩콩 6·야담쟁이 3·김로또 3).
+    _n = int(re.sub(r"\D", "", os.path.basename(ROOT)) or 1)
+    _ch = os.path.join(_G, "달달콩콩" if _n % 2 == 0 else "야담쟁이" if _n % 4 == 1 else "김로또")
     _up = glob.glob(os.path.join(_ch, "업로드 된 영상", os.path.basename(ROOT) + "_*.mp4"))
     FINAL_DIR = _G if _up else os.path.join(_ch, "새영상")
 else:
