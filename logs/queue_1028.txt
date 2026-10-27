@@ -1,0 +1,18 @@
+03:38 ep104 tts
+03:38 ep104 lv3 1
+03:43 ep104 render
+03:51 ep104 check
+03:52 ep104 끝 완성
+03:52 ep105 tts
+03:52 ep105 lv3 1
+03:53 ep104 고침 tts
+03:53 ep104 고침 render
+03:56 ep104 고침 끝 완성
+03:56 ep105 tts
+03:56 ep105 lv3 1
+04:01 ep105 render
+04:08 ep105 check
+04:09 ep105 끝 완성
+04:09 ep106 tts
+04:09 ep106 lv3 1
+04:13 ep106 render

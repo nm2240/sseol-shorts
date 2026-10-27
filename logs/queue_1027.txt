@@ -1,0 +1,96 @@
+10:07 ep91 render
+10:08 ep92 render
+10:32 ep92 check
+10:32 ep92 끝 완성
+10:32 ep94 lv3 1
+10:37 ep91 check
+10:38 ep91 끝 완성
+10:38 ep93 render
+11:17 ep91 render
+11:44 ep91 check
+11:44 ep91 끝 완성
+11:44 ep92 render
+11:57 ep94 render
+12:14 ep92 check
+12:14 ep92 끝 완성
+12:14 ep94 render
+12:23 ep95 lv3 1
+12:24 ep93 render
+13:05 ep93 끝 완성
+13:26 ep95 반복 묶음 → tts 다시
+13:26 ep95 lv3 2
+13:27 ep93 render
+13:36 ep93 check
+13:36 ep93 끝 완성
+13:36 ep95 lv3 1
+13:59 ep95 반복 묶음 → tts 다시
+13:59 ep95 lv3 2
+14:32 ep88 render
+14:43 ep89 render
+15:26 ep89 check
+15:26 ep89 끝 완성
+15:26 ep95 lv3 1
+15:56 ep88 render
+18:21 ep88 check
+18:21 ep88 끝 완성
+18:21 ep90 lv3 1
+19:01 ep90 render
+19:34 ep90 check
+19:34 ep90 끝 완성
+19:34 ep95 lv3 1
+20:03 ep95 반복 묶음 → tts 다시
+20:03 ep95 lv3 2
+20:32 ep95 render
+20:53 ep95 check
+20:53 ep95 끝 완성
+20:53 ep96 lv3 1
+20:58 ep96 render
+21:05 ep96 check
+21:05 ep96 끝 완성
+21:05 ep97 lv3 1
+21:09 ep97 render
+21:16 ep97 check
+21:16 ep97 끝 완성
+21:16 ep98 lv3 1
+21:20 ep98 render
+21:27 ep98 check
+21:27 ep98 끝 완성
+21:27 ep99 lv3 1
+21:30 ep99 render
+21:38 ep99 check
+21:38 ep99 끝 완성
+21:38 ep100 lv3 1
+21:42 ep100 render
+21:48 ep100 check
+21:48 ep100 끝 완성
+21:48 ep101 lv3 1
+21:52 ep101 render
+21:59 ep101 check
+21:59 ep101 끝 완성
+21:59 ep102 lv3 1
+22:03 ep102 render
+22:09 ep102 check
+22:09 ep102 끝 완성
+22:09 ep103 lv3 1
+22:13 ep103 render
+22:20 ep103 check
+22:20 ep103 끝 완성
+00:53 ep99 render
+01:07 ep99 check
+01:07 ep99 끝 완성
+01:07 ep100 render
+01:10 ep100 check
+01:10 ep100 끝 완성
+01:10 ep101 render
+01:14 ep101 check
+01:14 ep101 끝 완성
+01:14 ep102 render
+01:20 ep102 check
+01:20 ep102 끝 완성
+01:20 ep103 render
+01:25 ep103 check
+01:25 ep103 끝 완성
+01:25 ep97 lv3 1
+01:33 ep97 render
+01:41 ep97 check
+01:41 ep97 끝 완성

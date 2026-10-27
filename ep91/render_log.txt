@@ -1,0 +1,7 @@
+줄 크기 맞춤(나레이션 기준): 나레이터 +0.0dB(-4.0~+1.6)  의붓아들 +1.5dB(+0.7~+3.0)
+노란 문구 목소리 -5.0dB
+쉼 속 틱 21개 지움 [np.float64(46.85), np.float64(76.38), np.float64(76.38), np.float64(76.39), np.float64(76.39), np.float64(76.39), np.float64(95.05), np.float64(95.05)]
+나레이션 151.3초 → 속도 1.000
+봉우리 누름 -5.5 → -12.4dBFS
+완성 C:\Users\Administrator\OneDrive\바탕 화면\volcano-work\썰쇼츠\ep91\out\ep91_final.mp4 151.9초
+최종본 G:\내 드라이브\썰쇼츠\달달콩콩\새영상\ep91_의붓아들 이십 년 키웠더니.mp4

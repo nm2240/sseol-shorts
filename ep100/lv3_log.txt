@@ -1,0 +1,9 @@
+tts/g_417c2bdc [0] [('delete', '십', '')]
+tts/g_16b30ef1 [2] [('replace', '찻', '잣')]
+tts/g_ab202918 [3] [('replace', '내', '네'), ('replace', '내', '네')]
+tts/g_06e0cc0b [4, 5] [('delete', '일흔둘', ''), ('delete', '십', ''), ('delete', '삼', '')]
+tts/g_e1ad58eb [7, 8, 9, 10, 11] [('delete', '팔십', ''), ('replace', '재', '제')]
+tts/g_5003307e [22, 23, 24] [('delete', '일', '')]
+tts/g_2d3291b7 [28, 29, 30, 31, 32] [('replace', '데', '대')]
+반복 묶음 없음 
+끝
