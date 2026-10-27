@@ -1,0 +1,9 @@
+tts/g_dc5afc7d [10] [('replace', '논은', '노는')]
+tts/g_adbeb46f [14, 15, 16, 17] [('replace', '깊숙이', '깁스우기')]
+tts/g_04099efd [18] [('delete', '열한', '')]
+tts/g_c6ef13ab [19, 20, 21] [('delete', '열한', '')]
+tts/g_8c69ee8b [23, 24, 25, 26] [('replace', '여', '어'), ('replace', '주', '죽')]
+tts/g_ed84e036 [27, 28] [('replace', '셋', '세'), ('replace', '논', '돈')]
+tts/g_526507c0 [29, 30, 31, 32] [('replace', '쌀', '살')]
+반복 묶음 없음 
+끝

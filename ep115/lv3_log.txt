@@ -1,0 +1,10 @@
+tts/g_5fa172de [1] [('replace', '애', '의'), ('delete', '백', '')]
+tts/g_52b342f7 [4, 5, 6, 7, 8, 9, 10, 11, 12, 13] [('delete', '예순넷', ''), ('delete', '사십', ''), ('replace', '시누', '신우'), ('delete', '오', ''), ('replace', '시누', '신우'), ('replace', '갔어', '가써'), ('replace', '축의', '추기'), ('replace', '시누', '신우'), ('delete', '십', ''), ('delete', '백', '')]
+tts/g_c9f8044f [14] [('replace', '애', '의'), ('replace', '셋', '세'), ('delete', '오', '')]
+tts/g_496210f1 [16, 17, 18, 19] [('delete', '십', '')]
+tts/g_21a6b0a9 [21] [('delete', '오', '')]
+tts/g_efc57a33 [25] [('delete', '오', ''), ('delete', '십', '')]
+tts/g_6e5e5c33 [26] [('replace', '셋', '세')]
+tts/g_e1c52b1f [27, 28, 29, 30, 31, 32] [('delete', '십', ''), ('delete', '십', ''), ('delete', '십', ''), ('delete', '백', ''), ('delete', '사십', ''), ('replace', '케', '캐')]
+반복 묶음 없음 
+끝

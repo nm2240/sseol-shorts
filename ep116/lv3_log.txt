@@ -1,0 +1,11 @@
+tts/g_484587ca [1] [('replace', '포기', '폭이')]
+tts/g_a7517555 [2, 3, 4, 5] [('replace', '밤', '밭')]
+tts/g_34149440 [6] [('replace', '짓', '집')]
+tts/g_2daedb69 [7, 8, 9, 10, 11] [('replace', '씨네', '시내'), ('replace', '씨네', '시내'), ('replace', '어', '워')]
+tts/g_ba31aefe [12] [('replace', '네', '내')]
+tts/g_b14a3d5c [13, 14, 15, 16, 17, 18, 19, 20] [('delete', '두', ''), ('replace', '야', '하')]
+tts/g_99abf43e [23, 24] [('delete', '사십', '')]
+tts/g_b71f0aaf [28] [('replace', '아기', '약이')]
+tts/g_2d6a3dcd [29, 30, 31, 32, 33] [('replace', '해', '의'), ('delete', '사십', '')]
+반복 묶음 없음 
+끝

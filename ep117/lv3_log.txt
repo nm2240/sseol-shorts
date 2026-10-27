@@ -1,0 +1,11 @@
+tts/g_5e5414c3 [0] [('delete', '십', ''), ('replace', '사십구재', '제')]
+tts/g_7dc2274a [4, 5, 6, 7, 8, 9] [('delete', '예순여섯', ''), ('delete', '십', ''), ('delete', '십', ''), ('replace', '둑', '뚝'), ('replace', '갈', '갔')]
+tts/g_be7c519a [11, 12, 13] [('replace', '사십구재', '제'), ('replace', '사십구재', '제')]
+tts/g_043852a1 [16, 17, 18, 19, 20] [('delete', '십', ''), ('delete', '삼', '')]
+tts/g_7958ad69 [21] [('delete', '십', '')]
+tts/g_21a6fdd6 [24] [('replace', '니야', '냐')]
+tts/g_dc10dd8e [25, 26] [('delete', '십', ''), ('replace', '셈하', '세마')]
+tts/g_961d5ae6 [27] [('replace', '하', '아')]
+tts/g_67d3b9dd [28, 29, 30, 31, 32, 33] [('replace', '몫', '목신'), ('delete', '니', ''), ('delete', '십', '')]
+반복 묶음 없음 
+끝

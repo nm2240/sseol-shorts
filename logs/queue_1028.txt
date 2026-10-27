@@ -16,3 +16,123 @@
 04:09 ep106 tts
 04:09 ep106 lv3 1
 04:13 ep106 render
+04:20 ep106 check
+04:21 ep106 끝 완성
+04:21 ep105 고침 tts
+04:21 ep105 고침 render
+04:24 ep105 고침 끝 완성
+04:24 ep107 tts
+04:25 ep107 lv3 1
+04:30 ep107 render
+04:37 ep107 check
+04:37 ep107 끝 완성
+04:37 ep108 tts
+04:38 ep108 lv3 1
+04:42 ep108 render
+04:50 ep108 check
+04:50 ep108 끝 완성
+04:50 ep107 고침 tts
+04:50 ep107 고침 render
+04:54 ep107 고침 끝 완성
+04:54 ep108 고침 tts
+04:54 ep108 고침 render
+04:58 ep108 고침 끝 완성
+04:58 ep109 tts
+04:58 ep109 lv3 1
+05:03 ep109 render
+05:10 ep109 check
+05:10 ep109 끝 완성
+05:10 ep108 고침 tts
+05:10 ep108 고침 render
+05:14 ep108 고침 끝 완성
+05:14 ep109 고침 tts
+05:14 ep109 고침 render
+05:17 ep109 고침 끝 완성
+05:17 ep110 tts
+05:18 ep110 lv3 1
+05:22 ep110 render
+05:29 ep110 check
+05:30 ep110 끝 완성
+05:30 ep111 tts
+05:31 ep111 lv3 1
+05:35 ep111 render
+05:42 ep111 check
+05:42 ep111 끝 완성
+05:42 ep110 고침 tts
+05:43 ep110 고침 render
+05:46 ep110 고침 끝 완성
+05:46 ep111 고침 tts
+05:46 ep111 고침 render
+05:49 ep111 고침 끝 완성
+05:49 ep112 tts
+05:50 ep112 lv3 1
+05:54 ep112 render
+06:01 ep112 check
+06:02 ep112 끝 완성
+06:02 ep113 tts
+06:02 ep113 lv3 1
+06:07 ep113 render
+06:13 ep113 check
+06:14 ep113 끝 완성
+06:14 ep112 고침 tts
+06:14 ep112 고침 render
+06:18 ep112 고침 끝 완성
+06:18 ep113 고침 tts
+06:18 ep113 고침 render
+06:22 ep113 고침 끝 완성
+06:22 ep114 tts
+06:22 ep114 lv3 1
+06:27 ep114 render
+06:33 ep114 check
+06:34 ep114 끝 완성
+06:34 ep115 tts
+06:34 ep115 lv3 1
+06:39 ep115 render
+06:45 ep115 check
+06:45 ep115 끝 완성
+06:45 ep114 고침 tts
+06:45 ep114 고침 render
+06:49 ep114 고침 끝 완성
+06:49 ep115 고침 tts
+06:49 ep115 고침 render
+06:52 ep115 고침 끝 완성
+06:52 ep116 tts
+06:53 ep116 lv3 1
+06:57 ep116 render
+07:04 ep116 check
+07:05 ep116 끝 완성
+07:05 ep117 tts
+07:05 ep117 lv3 1
+07:10 ep117 render
+07:18 ep117 check
+07:19 ep117 끝 완성
+07:19 ep116 고침 tts
+07:19 ep116 고침 render
+07:24 ep116 고침 끝 완성
+07:24 ep117 고침 tts
+07:24 ep117 고침 render
+07:28 ep117 고침 끝 완성
+07:28 ep118 tts
+07:29 ep118 lv3 1
+07:33 ep118 render
+07:42 ep118 check
+07:42 ep118 끝 완성
+07:42 ep119 tts
+07:43 ep119 lv3 1
+07:47 ep119 render
+07:55 ep119 check
+07:56 ep119 끝 완성
+07:56 ep118 고침 tts
+07:56 ep118 고침 render
+08:01 ep118 고침 끝 완성
+08:01 ep119 고침 tts
+08:01 ep119 고침 render
+08:05 ep119 고침 끝 완성
+08:05 ep120 tts
+08:05 ep120 lv3 1
+08:10 ep120 render
+08:20 ep120 check
+08:20 ep120 끝 완성
+08:21 ep120 고침 tts
+08:21 ep120 고침 render
+08:25 ep120 고침 끝 완성
