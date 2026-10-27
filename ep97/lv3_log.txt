@@ -1,0 +1,8 @@
+tts/g_e6dc1427 [2, 3, 4, 5, 6, 7] [('delete', '쉰여덟', ''), ('replace', '해', '에'), ('delete', '사십', '')]
+tts/g_720f616c [8] [('replace', '니야', '냐')]
+tts/g_f19b41c7 [13] [('delete', '팔', ''), ('delete', '칠', '')]
+tts/g_8f9bc3da [14, 15] [('delete', '팔', '')]
+tts/g_0f6402af [21, 22] [('replace', '니', '네')]
+tts/g_c20f27ea [24] [('delete', '팔', '')]
+반복 묶음 없음 
+끝
