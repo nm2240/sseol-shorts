@@ -1,0 +1,7 @@
+tts/g_dc44eda6 [1] [('replace', '땅', '딱')]
+tts/g_e3e06e69 [2, 3, 4, 5, 6] [('replace', '둑', '뚝'), ('replace', '둑', '뚝'), ('replace', '앙', '안')]
+tts/g_4240ef2c [8, 9, 10, 11, 12, 13] [('delete', '삼', '')]
+tts/g_bbd67e43 [15] [('delete', '삼', ''), ('replace', '부치', '붙이')]
+tts/g_e84cdabc [20, 21] [('delete', '사십', '')]
+반복 묶음 없음 
+끝

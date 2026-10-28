@@ -1,0 +1,8 @@
+tts/g_1d3aa3c7 [1] [('replace', '납', '났')]
+tts/g_bd2f277c [2, 3, 4, 5] [('delete', '여섯', ''), ('replace', '일흔', '이른')]
+tts/g_83848d23 [14] [('delete', '일곱', '')]
+tts/g_4a64af65 [21] [('replace', '털', '덜')]
+tts/g_3c890fa1 [25] [('delete', '여섯', '')]
+tts/g_da04c9f7 [26, 27, 28, 29, 30] [('replace', '됨됨', '댐댐'), ('replace', '윗', '위')]
+반복 묶음 없음 
+끝

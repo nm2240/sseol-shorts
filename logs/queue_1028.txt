@@ -136,3 +136,16 @@
 08:21 ep120 고침 tts
 08:21 ep120 고침 render
 08:25 ep120 고침 끝 완성
+19:39 ep121 tts
+19:40 ep121 lv3 1
+19:44 ep121 render
+19:51 ep121 check
+19:52 ep121 끝 완성
+20:05 ep121 다시 render.py
+20:08 ep121 다시 check.py
+20:08 ep121 다시 tg_preview.py
+20:08 ep121 다시 끝
+22:35 ep121 다시 render.py
+22:38 ep121 다시 check.py
+22:38 ep121 다시 tg_preview.py
+22:39 ep121 다시 끝
