@@ -718,10 +718,10 @@ import glob, shutil
 _G = r"G:\내 드라이브\썰쇼츠"
 if os.path.isdir(_G):
     # 10-26 사용자 「김로또 하루 3개」 → 홀수 편을 반씩: ep%4==1 야담쟁이, ep%4==3 김로또(하루 12편 = 달달콩콩 6·야담쟁이 3·김로또 3).
-    #   10-26 「2틀치 재고」 — script.txt 머리에 「채널: 달달콩콩|야담쟁이|김로또」가 있으면 그 채널(자동제작.md 배분표).
+    #   10-26 「2틀치 재고」 — script.txt 머리에 「채널: 달달콩콩|야담쟁이|김로또|대작」(10-28 대작 추가)가 있으면 그 채널(자동제작.md 배분표).
     _n = int(re.sub(r"\D", "", os.path.basename(ROOT)) or 1)
     _cl = next((l.split(":", 1)[1].strip() for l in SCRIPT if l.startswith("채널:")), "")
-    _ch = os.path.join(_G, _cl if _cl in ("달달콩콩", "야담쟁이", "김로또") else
+    _ch = os.path.join(_G, _cl if _cl in ("달달콩콩", "야담쟁이", "김로또", "대작") else
                        "달달콩콩" if _n % 2 == 0 else "야담쟁이" if _n % 4 == 1 else "김로또")
     _up = glob.glob(os.path.join(_ch, "업로드 된 영상", os.path.basename(ROOT) + "_*.mp4"))
     FINAL_DIR = _G if _up else os.path.join(_ch, "새영상")
