@@ -663,7 +663,49 @@ order = ["p28647804", "p18924458", "p33897598", "p8745485", "p39302781", "p34250
          "p36236383", "p38283242", "p32701428", "p29181257", "p34727415", "p35591195", "p39410000",
          "p29976399", "p32701429"]   # 기본 순서(ep04 새벽 이야기) — script.txt 「배경: p…, p…」로 편마다 바꿈
 _bl = next((l.split(":", 1)[1] for l in SCRIPT if l.startswith("배경:")), None)
-if _bl: order = [x.strip() for x in _bl.split(",") if x.strip()]
+
+
+def pick_bg():
+    """10-28 사용자 「영상 이미지 똑같은 너무 중복해서 쓰지마」 — 편마다 같은 13개를 돌려 썼음.
+    bg/ 전체(bg_fetch.py 로 늘림)에서 앞 20편이 안 쓴 클립을, 가장 오래전에 쓴 것부터(같으면 편 번호로 섞어) 길이가 찰 만큼 고른다."""
+    import random
+    me = int(re.sub(r"\D", "", os.path.basename(ROOT)) or 0)
+    last = {}
+    for d in os.listdir(REPO):
+        m = re.fullmatch(r"ep(\d+)", d)
+        if not m or int(m.group(1)) == me or not os.path.exists(os.path.join(REPO, d, "script.txt")): continue
+        for l in open(os.path.join(REPO, d, "script.txt"), encoding="utf-8-sig"):
+            if l.startswith("배경:") and "자동" not in l:
+                for x in l.split(":", 1)[1].split(","):
+                    last[x.strip()] = max(last.get(x.strip(), -1), int(m.group(1)))
+    pool = sorted(f[:-4] for f in os.listdir(BG) if f.startswith("p") and f.endswith(".mp4"))
+    rnd = random.Random(me)
+    fresh = [p for p in pool if last.get(p, -1) < me - 20]
+    rnd.shuffle(fresh); fresh.sort(key=lambda p: last.get(p, -1))
+    rest = [p for p in pool if p not in fresh]; rest.sort(key=lambda p: (last.get(p, -1), rnd.random()))
+    out, acc = [], 0.0
+    for p in fresh + rest:
+        try:
+            d = float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                           os.path.join(BG, p + ".mp4")]).stdout)
+        except ValueError:
+            continue
+        out.append(p); acc += min(d, 10.0) - 1.0   # 한 클립은 10초까지만 씀(아래 CLIP_MAX)
+        if acc >= DUR + 25: break   # 움직임으로 빠질 몫까지 여유
+    return out
+
+
+if _bl and "자동" not in _bl:
+    order = [x.strip() for x in _bl.split(",") if x.strip()]
+else:   # 「배경:」 줄이 없거나 「배경: 자동」이면 고르고 script.txt 에 적어 둠(다음 편이 피하게)
+    order = pick_bg()
+    _sp = os.path.join(ROOT, "script.txt")
+    _tx = open(_sp, encoding="utf-8-sig").read()
+    _ln = "배경: " + ", ".join(order)
+    _tx = re.sub(r"^배경:.*$", _ln, _tx, count=1, flags=re.M) if re.search(r"^배경:", _tx, re.M) else \
+        re.sub(r"^(제목줄:.*)$", r"\1\n" + _ln, _tx, count=1, flags=re.M)
+    open(_sp, "w", encoding="utf-8").write(_tx)
+    print("배경 자동:", len(order), "개")
 
 
 def motion(path):
@@ -682,16 +724,23 @@ for o in order:
     else: keep.append(o)
 order = keep
 XF = 1.0
-durs = [float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
-                   os.path.join(BG, o + ".mp4")]).stdout) for o in order]
-use, acc = [], 0.0
-for o, d in zip(order, durs):
-    use.append((o, d)); acc += d - XF
-    if acc >= DUR + 1: break
+CLIP_MAX = 10.0   # 10-28 한 클립을 오래 붙잡지 않게 10초까지만(같은 화면이 길게 이어지면 더 똑같아 보임)
+full = [float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                    os.path.join(BG, o + ".mp4")]).stdout) for o in order]
+# 클립마다 시작점을 편 번호로 섞어 고르고, 클립이 모자라 한 바퀴 더 돌면 두 번째는 좌우 반전(같은 화면이 안 되게)
+import random as _random
+_rnd = _random.Random(int(re.sub(r"\D", "", os.path.basename(ROOT)) or 0))
+use, acc, rep = [], 0.0, 0
+while acc < DUR + 1 and order and rep < 6:
+    for o, L in zip(order, full):
+        d = min(CLIP_MAX, L); st = _rnd.uniform(0, L - d - 0.1) if L - d > 0.2 else 0.0
+        use.append((o, d, st, rep % 2 == 1)); acc += d - XF
+        if acc >= DUR + 1: break
+    rep += 1
 inputs, fl, prev, off = [], [], "v0", 0.0
-for k, (o, d) in enumerate(use):
-    inputs += ["-i", os.path.join(BG, o + ".mp4")]
-    fl.append(f"[{k}:v]scale=1080:1920:force_original_aspect_ratio=increase:out_range=tv,crop=1080:1920,fps=30,setsar=1,"
+for k, (o, d, st, flip) in enumerate(use):
+    inputs += ["-ss", f"{st:.3f}", "-t", f"{d:.3f}", "-i", os.path.join(BG, o + ".mp4")]
+    fl.append(f"[{k}:v]{'hflip,' if flip else ''}scale=1080:1920:force_original_aspect_ratio=increase:out_range=tv,crop=1080:1920,fps=30,setsar=1,"
               f"eq=brightness=-0.04:saturation=0.9,format=yuv420p[v{k}]")
 for k in range(1, len(use)):
     off += use[k - 1][1] - XF
