@@ -49,7 +49,9 @@ def say(text):   # 따옴표는 소리에 필요 없음, {자막|소리}는 소�
 groups = []
 for i, l in enumerate(lines):
     g = groups[-1] if groups else None
-    if g and lines[g[-1]]["voice"] == l["voice"] and lines[g[-1]]["spk"] == l["spk"]:
+    # 10-28 ep121 노란 문구 앞뒤를 한 묶음으로 받았더니 렌더가 「찼죠」의 「죠」를 다음 줄로 잘라 문구 3초 뒤에 「쪼」가 튐
+    #   (사용자 「혀를 찼죠 이부분부터 끊기면서 튀어」) → 노란 문구 자리에서 묶음을 끊음.
+    if g and lines[g[-1]]["voice"] == l["voice"] and lines[g[-1]]["spk"] == l["spk"] and not (cta and i == cta["pos"]):
         g.append(i)
     else:
         groups.append([i])
