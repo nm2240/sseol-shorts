@@ -1,0 +1,10 @@
+tts/g_2da6298f [0] [('delete', '삼', ''), ('replace', '쌀', '살')]
+tts/g_d17cd5e1 [1] [('replace', '나', '놔')]
+tts/g_b252b0a7 [2, 3, 4, 5, 6, 7, 8, 9, 10] [('replace', '든', '둔'), ('delete', '쉰여섯삼', ''), ('delete', '열다섯', ''), ('replace', '거뒀', '걷었'), ('replace', '둑', '뚝')]
+tts/g_a832548a [13, 14] [('replace', '드리', '들이')]
+tts/g_eba5dc5c [15, 16, 17, 18, 19] [('delete', '오', '')]
+tts/g_d1370e1b [20] [('replace', '오', '요'), ('delete', '오', ''), ('replace', '값', '가')]
+tts/g_ca472da5 [22, 23] [('replace', '쌀', '살'), ('replace', '네', '니')]
+tts/g_57687a12 [24, 25, 26, 27, 28, 29] [('replace', '짓', '지')]
+반복 묶음 없음 
+끝

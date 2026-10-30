@@ -1,0 +1,10 @@
+tts/g_f72ecc05 [1] [('delete', '오십', '')]
+tts/g_4808872b [2, 3, 4, 5, 6, 7] [('delete', '예순넷', '')]
+tts/g_54cb52a6 [8] [('replace', '게써', '겠어')]
+tts/g_d59acbc2 [13] [('delete', '삼십', '')]
+tts/g_49bd6aa2 [15, 16] [('replace', '네', '내'), ('delete', '백', ''), ('replace', '니', '네'), ('delete', '오십', '')]
+tts/g_20f65458 [18, 19] [('replace', '돈은', '도는')]
+tts/g_0e0af7e3 [20, 21] [('replace', '귀', '기')]
+tts/g_2931da63 [23] [('replace', '도리', '돌이')]
+반복 묶음 없음 
+끝
