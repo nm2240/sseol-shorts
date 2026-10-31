@@ -773,7 +773,9 @@ if os.path.isdir(_G):
     _ch = os.path.join(_G, _cl if _cl in ("달달콩콩", "야담쟁이", "김로또", "대작") else
                        "달달콩콩" if _n % 2 == 0 else "야담쟁이" if _n % 4 == 1 else "김로또")
     _up = glob.glob(os.path.join(_ch, "업로드 된 영상", os.path.basename(ROOT) + "_*.mp4"))
-    FINAL_DIR = _G if _up else os.path.join(_ch, "새영상")
+    # 10-31 사용자 「앞으로 썰쇼츠 영상 만들면 g드라이브 썰쇼츠 폴더에 넣고 각각의 채널에 업로드한후에는 각각의 폴더로 넣어줘」
+    #   → 완성본은 채널별 새영상이 아니라 G:\내 드라이브\썰쇼츠 바로 아래. 채널은 script.txt 「채널:」로 upload_schedule.py 가 골라 걺.
+    FINAL_DIR = _G
 else:
     FINAL_DIR = os.path.join(REPO, "썰쇼츠 최종본")
 os.makedirs(FINAL_DIR, exist_ok=True)

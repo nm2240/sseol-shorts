@@ -67,6 +67,21 @@ if CH:
 TAG = f"{CH}예약" if CH else "유튜브예약"
 USED = f"{CH} 칸 사용" if CH else "칸 사용"
 NEW = FINALS / (CH or "야담쟁이") / "새영상"
+# 10-31 사용자 「g드라이브 썰쇼츠 폴더에 넣고 각각의 채널에 업로드한후에는 각각의 폴더로」 → 완성본은 썰쇼츠 바로 아래(render.py).
+#   --ch 채널이면 그 폴더에서 이 저장소 편(script.txt 「채널:」이 그 채널이고 파일 이름이 render.py 가 붙인 이름과 같은 것)만 고름 —
+#   다른 세션이 같은 폴더에 넣은 같은 번호 편(예: ep152_사위 고깃집…)은 건드리지 않음.
+ROOT_NEW = FINALS
+
+
+def _mine(mp4: Path) -> bool:
+    ep = mp4.name.split("_")[0]
+    sc = REPO / ep / "script.txt"
+    if not (CH and sc.exists()): return False
+    lines = sc.read_text(encoding="utf-8-sig").splitlines()
+    ch = next((l.split(":", 1)[1].strip() for l in lines if l.startswith("채널:")), "")
+    t = next((l.split(":", 1)[1] for l in lines if l.startswith("제목:")), "")
+    t = re.sub(r'[\/:*?"<>|.…]', "", t.split(",")[0]).strip()
+    return ch == CH and mp4.name == f"{ep}_{t}.mp4"
 DONE = FINALS / (CH or "야담쟁이") / "업로드 된 영상"
 
 
@@ -145,6 +160,8 @@ def main():
     until = dt.date.fromisoformat(sys.argv[sys.argv.index("--until") + 1]) if "--until" in sys.argv else None
 
     vids = sorted(p for p in NEW.glob("*.mp4") if p.name not in queued)
+    if CH:   # 10-31부터 완성본은 썰쇼츠 바로 아래
+        vids += sorted(p for p in ROOT_NEW.glob("ep*.mp4") if p.name not in queued and _mine(p))
     for v in vids:
         if not v.with_suffix(".txt").exists() and go and make_txt(v):
             log(f"제목 txt 만듦(epNN/description.txt) {v.with_suffix('.txt').name}")
@@ -181,7 +198,8 @@ def main():
     bad = 0
     for name, at in plan:
         man = UP / "기록" / "_썰쇼츠_예약.json"
-        man.write_text(json.dumps([{"channel": ch, "file": str(NEW / name), "title": "", "desc": "", "tags": [],
+        src = next(v for v in vids if v.name == name)
+        man.write_text(json.dumps([{"channel": ch, "file": str(src), "title": "", "desc": "", "tags": [],
                                     "publish_at": at, "time_by": "user", "allow_not_short": False}],
                                   ensure_ascii=False), encoding="utf-8")
         r = subprocess.run([str(py), "upload.py", "--manifest", str(man), "--승인"], cwd=UP, env=env,
@@ -191,7 +209,7 @@ def main():
             log(f"{TAG} {at} {name} {m.group(0)}")
             try:   # 올라간 영상+txt → 그 채널 업로드 된 영상(10-26)
                 DONE.mkdir(parents=True, exist_ok=True)
-                for f in (NEW / name, (NEW / name).with_suffix(".txt")):
+                for f in (src, src.with_suffix(".txt")):
                     if f.exists(): shutil.move(str(f), str(DONE / f.name))
             except OSError as e:
                 log(f"  파일 정리 실패(새영상에 남음 — 다시 걸리지 않게 손으로 옮길 것) {e}")
