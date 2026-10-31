@@ -13,6 +13,16 @@ TTS = os.path.join(ROOT, "tts")
 BG = os.path.join(REPO, "bg")   # 잔잔한 풍경 클립(pexels) — bg/SOURCES.md
 OUT = os.path.join(ROOT, "out")
 os.makedirs(OUT, exist_ok=True)
+# 10-31 사용자 「다른 pc에서 수정하려면 애로사항」→「해결해」: bg/*.mp4 는 .gitignore 라 저장소에 없음 →
+#   G: 「수정용 공통\bg」와 서로 없는 것만 복사(다른 PC는 여기서 받아 옴, bg_fetch.py 로 늘린 클립은 여기로 올림).
+BG_G = r"G:\내 드라이브\썰쇼츠\수정용 공통\bg"
+if os.path.isdir(os.path.dirname(BG_G)) or os.path.isdir(BG_G):
+    import shutil
+    os.makedirs(BG, exist_ok=True); os.makedirs(BG_G, exist_ok=True)
+    for _a, _b in ((BG_G, BG), (BG, BG_G)):
+        for _f in os.listdir(_a):
+            if _f.endswith(".mp4") and not os.path.exists(os.path.join(_b, _f)):
+                shutil.copy2(os.path.join(_a, _f), os.path.join(_b, _f))
 FONT_DIR = os.path.join(REPO, "fonts")
 SCRIPT = [l.rstrip("\n") for l in open(os.path.join(ROOT, "script.txt"), encoding="utf-8-sig")]
 FONT = "Do Hyeon"      # 레퍼런스 제목·자막 폰트(배민 도현체 계열, 10-12 비교 확인)
