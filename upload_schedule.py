@@ -70,6 +70,8 @@ NEW = FINALS / (CH or "야담쟁이") / "새영상"
 # 10-31 사용자 「g드라이브 썰쇼츠 폴더에 넣고 각각의 채널에 업로드한후에는 각각의 폴더로」 → 완성본은 썰쇼츠 바로 아래(render.py).
 #   --ch 채널이면 그 폴더에서 이 저장소 편(script.txt 「채널:」이 그 채널이고 파일 이름이 render.py 가 붙인 이름과 같은 것)만 고름 —
 #   다른 세션이 같은 폴더에 넣은 같은 번호 편(예: ep152_사위 고깃집…)은 건드리지 않음.
+# 10-31 오후 사용자 「이제 채널 구분없이 만들어 놓으면 순차적으로 올릴거고 올리고 난후 각각 채널의 업로드된 파일로」
+#   → 「채널:」 줄은 안 봄. 어느 채널이든 번호 앞선 편부터 그 채널 칸에 걸고, 올린 채널의 업로드 된 영상으로 옮김.
 ROOT_NEW = FINALS
 
 
@@ -78,10 +80,14 @@ def _mine(mp4: Path) -> bool:
     sc = REPO / ep / "script.txt"
     if not (CH and sc.exists()): return False
     lines = sc.read_text(encoding="utf-8-sig").splitlines()
-    ch = next((l.split(":", 1)[1].strip() for l in lines if l.startswith("채널:")), "")
     t = next((l.split(":", 1)[1] for l in lines if l.startswith("제목:")), "")
     t = re.sub(r'[\/:*?"<>|.…]', "", t.split(",")[0]).strip()
-    return ch == CH and mp4.name == f"{ep}_{t}.mp4"
+    return mp4.name == f"{ep}_{t}.mp4"
+
+
+def _epno(p: Path) -> int:
+    m = re.match(r"ep(\d+)_", p.name)
+    return int(m.group(1)) if m else 10**6
 DONE = FINALS / (CH or "야담쟁이") / "업로드 된 영상"
 
 
@@ -161,7 +167,7 @@ def main():
 
     vids = sorted(p for p in NEW.glob("*.mp4") if p.name not in queued)
     if CH:   # 10-31부터 완성본은 썰쇼츠 바로 아래
-        vids += sorted(p for p in ROOT_NEW.glob("ep*.mp4") if p.name not in queued and _mine(p))
+        vids += sorted((p for p in ROOT_NEW.glob("ep*.mp4") if p.name not in queued and _mine(p)), key=_epno)
     for v in vids:
         if not v.with_suffix(".txt").exists() and go and make_txt(v):
             log(f"제목 txt 만듦(epNN/description.txt) {v.with_suffix('.txt').name}")
