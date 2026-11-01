@@ -61,6 +61,14 @@ CHANNELS = {
     "대작": {"id": "UC8hBM-784GMgj8V7EvNvzBA", "base": dt.date(2026, 10, 28),
              "times": [8 * 60 + 52, 10 * 60 + 14, 11 * 60 + 46, 13 * 60 + 8, 14 * 60 + 37, 15 * 60 + 39],
              "special": {}},
+    # 11-01 사용자(컨트롤타워) 「무비정에 썰쇼츠 하루 6개씩 올려」·「지금 바로 1개 업로드하고 나머지 예약 걸고 내일부터는 7시 23분부터 예약해」
+    #   → 무비정(옛 그날의그림자) 하루 6칸 07:23부터 약 97분 간격, 날마다 7분 밀지 않음(step 0), 이 채널만 07시 칸 허용(window).
+    #   11-01은 1편 바로(13:25) + 오후 5편.
+    "무비정": {"id": "UCz9hwN4lK0M7atVCeTFK0Ug", "base": dt.date(2026, 11, 1),
+               "times": [7 * 60 + 23, 9 * 60, 10 * 60 + 37, 12 * 60 + 14, 13 * 60 + 51, 15 * 60 + 28],
+               "step": 0, "window": (7 * 60, 17 * 60),
+               "special": {dt.date(2026, 11, 1): [13 * 60 + 25, 14 * 60 + 5, 14 * 60 + 45, 15 * 60 + 25,
+                                                  16 * 60 + 5, 16 * 60 + 45]}},
 }
 CH = sys.argv[sys.argv.index("--ch") + 1] if "--ch" in sys.argv else None
 if CH:
@@ -96,14 +104,16 @@ def day_slots(day: dt.date) -> list:
     if CH and day in CHANNELS[CH]["special"]:
         return [dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=t) for t in CHANNELS[CH]["special"][day]]
     d = (day - BASE_DAY).days % CYCLE
-    return [dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=t + STEP * d) for t in TIMES]
+    step = CHANNELS[CH].get("step", STEP) if CH else STEP
+    return [dt.datetime.combine(day, dt.time()) + dt.timedelta(minutes=t + step * d) for t in TIMES]
 
 
 def future_slots(now: dt.datetime, days: int = 60):
     day = max(now.date(), BASE_DAY)
+    win = CHANNELS[CH].get("window", WINDOW) if CH else WINDOW
     for _ in range(days):
         for s in day_slots(day):
-            if not WINDOW[0] <= s.hour * 60 + s.minute <= WINDOW[1]:   # 8~17시 밖 칸은 절대 안 씀
+            if not win[0] <= s.hour * 60 + s.minute <= win[1]:   # 8~17시 밖 칸은 절대 안 씀(무비정만 07시부터 — 11-01 사용자)
                 continue
             if s >= now + LEAD:
                 yield s
