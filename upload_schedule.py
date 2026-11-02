@@ -180,9 +180,10 @@ def main():
 
     vids = sorted(p for p in NEW.glob("*.mp4") if p.name not in queued)
     if CH:   # 10-31부터 완성본은 썰쇼츠 바로 아래
-        vids += sorted((p for p in ROOT_NEW.glob("ep*.mp4") if p.name not in queued and _mine(p)), key=_epno)
+        # 11-02 검수 폴더는 사용자가 직접 고른 편 → 다른 PC/세션이 만든 편(번호만 겹침)도 올림. txt 는 이 저장소 편일 때만 만듦.
+        vids += sorted((p for p in ROOT_NEW.glob("ep*.mp4") if p.name not in queued), key=_epno)
     for v in vids:
-        if not v.with_suffix(".txt").exists() and go and make_txt(v):
+        if not v.with_suffix(".txt").exists() and go and (v.parent == NEW or _mine(v)) and make_txt(v):
             log(f"제목 txt 만듦(epNN/description.txt) {v.with_suffix('.txt').name}")
     no_txt = [p.name for p in vids if not p.with_suffix(".txt").exists()]
     vids = [p for p in vids if p.with_suffix(".txt").exists()]
